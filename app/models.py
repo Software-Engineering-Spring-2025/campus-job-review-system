@@ -24,7 +24,6 @@ class Reviews(db.Model):
 
 
 class Vacancies(db.Model):
-
     """Model which stores the information of the reviews submitted"""
 
     vacancyId = db.Column(db.Integer, primary_key=True)

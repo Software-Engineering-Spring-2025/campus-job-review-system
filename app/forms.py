@@ -15,6 +15,7 @@ from app.models import User
 
 class RegistrationForm(FlaskForm):
     """Form for user registration."""
+
     username = StringField(
         "Username", validators=[DataRequired(), Length(min=2, max=20)]
     )

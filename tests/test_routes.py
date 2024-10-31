@@ -3,7 +3,7 @@ import sys
 import pytest
 from app import app, db
 from app.models import User, Reviews
-from flask import url_for
+from unittest.mock import patch
 
 @pytest.fixture
 def client():
@@ -252,3 +252,139 @@ def test_page_content_post_search_criteria_persistence(client, create_reviews):
     assert b'New York' in response.data
     assert b'3' in response.data  # Check if the min rating is displayed
     assert b'5' in response.data  # Check if the max rating is displayed
+
+# Test home page access
+def test_home_page_access(client):
+    response = client.get('/', follow_redirects=True)
+    assert b'nc state campus jobs' in response.data.lower()
+
+
+# Test unauthorized access to account page
+def test_account_route_requires_login(client):
+    response = client.get('/account', follow_redirects=True)
+    assert b'login' in response.data.lower()
+
+
+# Test user registration with invalid email
+def test_register_invalid_email(client):
+    response = client.post('/register', data={
+        'username': 'testuser',
+        'email': 'invalid-email',
+        'password': 'pass',
+        'confirm_password': 'pass'
+    }, follow_redirects=True)
+    assert b'invalid' in response.data.lower()
+
+
+# Test pagination limit on reviews
+def test_review_pagination_limit(client, create_review):
+    response = client.get('/review/all?page=1', follow_redirects=True)
+    assert b'page' in response.data.lower()  # Confirm pagination element
+
+
+# Test static file access
+def test_static_files_served(client):
+    response = client.get('/static/css/style.css')
+    assert response.data.strip() != b''
+
+
+# Test CSRF protection with a fake CSRF token
+def test_csrf_protection_on_review_form(client):
+    response = client.post('/review/new', data={
+        "job_title": "Test",
+        "job_description": "Test",
+        "locations": "Test",
+        "hourly_pay": "20",
+        "benefits": "None",
+        "review": "Nice job!",
+        "rating": "5",
+        "recommendation": "Yes",
+    }, follow_redirects=True)
+    assert b'alert' in response.data.lower()
+
+
+# Test unauthorized review update attempt
+def test_update_review_permission_denied(client, create_review):
+    another_user = User(username="otheruser", email="other@example.com", password="password")
+    db.session.add(another_user)
+    db.session.commit()
+
+    with client.session_transaction() as session:
+        session['user_id'] = another_user.id
+
+    response = client.post(f'/review/{create_review.id}/update', data={
+        "job_title": "Unauthorized Update",
+    }, follow_redirects=True)
+    assert b'alert' in response.data.lower()
+
+
+# Test login with remember me option
+def test_login_remember_me(client):
+    user = User(username="rememberme", email="remember@example.com", password="password")
+    db.session.add(user)
+    db.session.commit()
+
+    response = client.post('/login', data={
+        'email': 'remember@example.com',
+        'password': 'password',
+        'remember': True
+    }, follow_redirects=True)
+    assert b'ncsu campus job' in response.data.lower()
+
+
+# Test dashboard job listings display
+def test_dashboard_jobs_display(client):
+    with patch('app.services.job_fetcher.fetch_job_listings') as mock_fetch:
+        mock_fetch.return_value = [
+            {"title": "Job 1", "link": "http://example.com/job1"},
+            {"title": "Job 2", "link": "http://example.com/job2"},
+        ]
+        response = client.get('/dashboard', follow_redirects=True)
+        assert b'job' in response.data.lower()
+
+
+def test_register_password_mismatch(client):
+    response = client.post('/register', data={
+        'username': 'mismatchuser',
+        'email': 'mismatch@example.com',
+        'password': 'password123',
+        'confirm_password': 'differentpassword'
+    }, follow_redirects=True)
+    assert b'field must be equal to password' in response.data.lower()
+
+
+# Test accessing account page without logging in
+def test_invalid_account_access(client):
+    response = client.get('/account', follow_redirects=True)
+    assert b'login' in response.data.lower()
+
+
+# Test user session persistence after login
+def test_user_session_persistence(client, login_user):
+    with client.session_transaction() as session:
+        assert session.get('user_id') == login_user.id
+
+
+# Test review creation with invalid rating input
+def test_create_review_invalid_rating(client, login_user):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+    response = client.post('/review/new', data={
+        "job_title": "Test Job",
+        "job_description": "Description",
+        "department": "Department",
+        "locations": "Location",
+        "hourly_pay": "20",
+        "benefits": "Health",
+        "review": "Good",
+        "recommendation": "Yes",
+    }, follow_redirects=True)
+    print(response.data.lower().decode('utf-8'))
+    assert b'alert' in response.data.lower() or b'invalid' in response.data.lower()
+
+
+# Test viewing a non-existent review
+def test_view_nonexistent_review(client):
+    response = client.get('/review/9999', follow_redirects=True)
+    assert b'not found' in response.data.lower()

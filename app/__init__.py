@@ -11,15 +11,19 @@ import pytz
 
 cached_jobs = []
 
+
 def refresh_job_data():
     global cached_jobs
     cached_jobs = fetch_job_listings()
     print(cached_jobs)
-    socketio.emit('update_jobs', cached_jobs)
+    socketio.emit("update_jobs", cached_jobs)
+
 
 scheduler = BackgroundScheduler()
 
-scheduler.add_job(refresh_job_data, 'interval', seconds=5, timezone=pytz.timezone('America/New_York'))
+scheduler.add_job(
+    refresh_job_data, "interval", seconds=5, timezone=pytz.timezone("America/New_York")
+)
 
 print(scheduler)
 scheduler.start()
@@ -39,5 +43,6 @@ migrate = Migrate(app, db, render_as_batch=True)
 @app.before_first_request
 def create_table():
     db.create_all()
+
 
 from app import routes, models

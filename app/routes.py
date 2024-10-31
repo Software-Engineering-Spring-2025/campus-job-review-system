@@ -1,13 +1,11 @@
-from flask import render_template, request, redirect, flash, url_for, abort
-from app import app, db, bcrypt
-from app.models import Reviews, Vacancies, User
-from app.forms import RegistrationForm, LoginForm, ReviewForm
+from flask import render_template, request, redirect, flash, url_for, abort, jsonify
 from flask_login import login_user, current_user, logout_user, login_required
+from app.services.job_fetcher import fetch_job_listings
+from app import app, db, bcrypt
+from app.models import Reviews, User
+from app.forms import RegistrationForm, LoginForm, ReviewForm
 
 app.config["SECRET_KEY"] = "5791628bb0b13ce0c676dfde280ba245"
-# app/routes/jobs.py
-from flask import Blueprint, jsonify
-from app.services.job_fetcher import fetch_job_listings
 
 
 @app.route("/")
@@ -68,11 +66,10 @@ def logout():
 @app.route("/review/all")
 def view_reviews():
     """An API for the user to view all the reviews entered with pagination"""
-    page = request.args.get('page', 1, type=int)
-    per_page = 5  # Adjust as needed
+    page = request.args.get("page", 1, type=int)
+    per_page = 5
     entries = Reviews.query.paginate(page=page, per_page=per_page)
     return render_template("view_reviews.html", entries=entries)
-
 
 
 @app.route("/review/new", methods=["GET", "POST"])
@@ -162,26 +159,26 @@ def getVacantJobs():
     return render_template("dashboard.html")
 
 
-@app.route('/pageContentPost', methods=['POST', 'GET'])
+@app.route("/pageContentPost", methods=["POST", "GET"])
 def page_content_post():
     """An API for the user to view specific reviews depending on the job title, location, and rating range with pagination."""
-    page = request.args.get('page', 1, type=int)
+    page = request.args.get("page", 1, type=int)
     per_page = 5  # Set items per page as desired
 
     # Retrieve form data
-    search_title = request.form.get('search_title', '')
-    search_location = request.form.get('search_location', '')
-    min_rating = request.form.get('min_rating', type=int, default=1)
-    max_rating = request.form.get('max_rating', type=int, default=5)
+    search_title = request.form.get("search_title", "")
+    search_location = request.form.get("search_location", "")
+    min_rating = request.form.get("min_rating", type=int, default=1)
+    max_rating = request.form.get("max_rating", type=int, default=5)
 
     # Initial query for reviews
     query = Reviews.query
 
     # Apply filters if search fields are filled
     if search_title.strip():
-        query = query.filter(Reviews.job_title.ilike(f'%{search_title}%'))
+        query = query.filter(Reviews.job_title.ilike(f"%{search_title}%"))
     if search_location.strip():
-        query = query.filter(Reviews.locations.ilike(f'%{search_location}%'))
+        query = query.filter(Reviews.locations.ilike(f"%{search_location}%"))
     if min_rating is not None and max_rating is not None:
         query = query.filter(Reviews.rating.between(min_rating, max_rating))
 
@@ -190,17 +187,13 @@ def page_content_post():
 
     # Pass search terms back to the template to preserve state across pagination
     return render_template(
-        'view_reviews.html',
+        "view_reviews.html",
         entries=entries,
         search_title=search_title,
         search_location=search_location,
         min_rating=min_rating,
-        max_rating=max_rating
+        max_rating=max_rating,
     )
-
-
-
-
 
 
 @app.route("/account")
@@ -209,10 +202,7 @@ def account():
     return render_template("account.html", title="Account")
 
 
-
-
-@app.route('/api/jobs', methods=['GET'])
+@app.route("/api/jobs", methods=["GET"])
 def get_jobs():
     job_listings = fetch_job_listings()
     return jsonify(job_listings)
-
