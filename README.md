@@ -132,7 +132,7 @@ We’re excited about the enhancements coming to the NCSU Campus Jobs Review Sys
 
 - Enhanced User Interface: Expect a cleaner, more dynamic UI for a smoother, more enjoyable user experience.
 
-- Integrated Job Application Portal: Soon, you’ll be able to apply directly for reviewed positions through our platform, streamlining the application process.
+- Personalized Job Recommendations: A tailored recommendation system suggests jobs based on user profiles and past reviews, enhancing relevance and discovery.
 
 
 ## 🙌 Contributors
