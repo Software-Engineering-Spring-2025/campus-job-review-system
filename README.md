@@ -105,7 +105,7 @@ Check out our demo video to see the application in action! Click the link below 
 
 
 ## 📊 Project Poster
-Curious about our project? View our project poster showcasing key aspects of the system [here](https://www.canva.com/design/DAGSSn3puco/iCHapSDmDS8HxcAHrv_Hyg/view?utm_content=DAGSSn3puco&utm_campaign=designshare&utm_medium=link&utm_source=editor).
+Curious about our project? View our project poster showcasing key aspects of the system [here]([https://www.canva.com/design/DAGSSn3puco/iCHapSDmDS8HxcAHrv_Hyg/view?utm_content=DAGSSn3puco&utm_campaign=designshare&utm_medium=link&utm_source=editor](https://www.canva.com/design/DAGVKp8r6wY/V9NS6fGyN8Egj4PHvPCEaQ/view?utm_content=DAGVKp8r6wY&utm_campaign=designshare&utm_medium=link&utm_source=editor)).
 
 
 ## 🤝 Contribution Guidelines
@@ -132,7 +132,7 @@ We’re excited about the enhancements coming to the NCSU Campus Jobs Review Sys
 
 - Enhanced User Interface: Expect a cleaner, more dynamic UI for a smoother, more enjoyable user experience.
 
-- Integrated Job Application Portal: Soon, you’ll be able to apply directly for reviewed positions through our platform, streamlining the application process.
+- Personalized Job Recommendations: A tailored recommendation system suggests jobs based on user profiles and past reviews, enhancing relevance and discovery.
 
 
 ## 🙌 Contributors
