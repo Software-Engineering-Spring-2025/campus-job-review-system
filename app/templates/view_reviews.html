@@ -1,75 +1,72 @@
 {% extends "base.html" %}
 {% block content %}
 
-<link
-  rel="stylesheet"
-  href="{{url_for('static', filename='/css/page_content.css')}}"
-/>
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-/>
+<link rel="stylesheet" href="{{url_for('static', filename='/css/page_content.css')}}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.6.3/nouislider.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.6.3/nouislider.min.js"></script>
-
 <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-  const slider = document.getElementById('rating-slider');
-  const minDisplay = document.getElementById("min-rating-display");
-  const maxDisplay = document.getElementById("max-rating-display");
-  const minRatingInput = document.getElementById("min-rating");
-  const maxRatingInput = document.getElementById("max-rating");
+    const slider = document.getElementById('rating-slider');
+    const minDisplay = document.getElementById("min-rating-display");
+    const maxDisplay = document.getElementById("max-rating-display");
+    const minRatingInput = document.getElementById("min-rating");
+    const maxRatingInput = document.getElementById("max-rating");
 
-  noUiSlider.create(slider, {
-    start: [1, 5], // Default starting range
-    connect: true,
-    range: {
-      'min': 1,
-      'max': 5
-    },
-    tooltips: [true, true], // Show tooltips
-    format: {
-      to: function (value) {
-        return Math.round(value); // Round the values
-      },
-      from: function (value) {
-        return Number(value); // Convert to number
-      }
-    }
-  });
+    if (slider && minDisplay && maxDisplay && minRatingInput && maxRatingInput) {
+        noUiSlider.create(slider, {
+            start: [1, 5], // Default starting range
+            connect: true,
+            range: {
+                'min': 1,
+                'max': 5
+            },
+            tooltips: [true, true],
+            format: {
+                to: function(value) {
+                    return Math.round(value);
+                },
+                from: function(value) {
+                    return Number(value);
+                }
+            }
+        });
 
-  slider.noUiSlider.on('update', function (values, handle) {
-    if (handle === 0) {
-      minDisplay.innerHTML = Math.round(values[0]);
-      minRatingInput.value = Math.round(values[0]); // Update hidden input
+        slider.noUiSlider.on('update', function(values, handle) {
+            if (handle === 0) {
+                minDisplay.innerHTML = Math.round(values[0]);
+                minRatingInput.value = Math.round(values[0]);
+            } else {
+                maxDisplay.innerHTML = Math.round(values[1]);
+                maxRatingInput.value = Math.round(values[1]);
+            }
+        });
     } else {
-      maxDisplay.innerHTML = Math.round(values[1]);
-      maxRatingInput.value = Math.round(values[1]); // Update hidden input
+        console.error("Slider or display elements are not found.");
     }
-  });
 });
 </script>
 
 <form class="filter-form" action="/pageContentPost" method="post">
-  <div class="filter-container">
-    <input type="text" placeholder="Search Job Title..." name="search_title" class="filter-input" />
-    <input type="text" placeholder="Search Location..." name="search_location" class="filter-input" />
-    
-    <div class="slider-container">
-      
-      <div id="rating-slider" class="slider"></div>
-      <div class="rating-values"></div>
-      <input type="hidden" name="min_rating" id="min-rating" value="1" />
-      <input type="hidden" name="max_rating" id="max-rating" value="5" />
-      <label>Rating Range:</label>
-    </div>
-    
-    <button type="submit" class="filter-button"><i class="fa fa-search"></i> Search</button>
-  </div>
-</form>
+    <div class="filter-container">
+        <input type="text" placeholder="Search Job Title..." name="search_title" class="filter-input" />
+        <input type="text" placeholder="Search Location..." name="search_location" class="filter-input" />
 
+        <div class="slider-container">
+            <label>Rating Range:</label>
+            <div id="rating-slider" class="slider"></div>
+            <div class="rating-values">
+                <span id="min-rating-display">1</span> - <span id="max-rating-display">5</span>
+            </div>
+            <input type="hidden" name="min_rating" id="min-rating" value="1" />
+            <input type="hidden" name="max_rating" id="max-rating" value="5" />
+        </div>
+        
+        <button type="submit" class="filter-button"><i class="fa fa-search"></i> Search</button>
+    </div>
+</form>
 
 <br /><br />
 <div style="background-color: white">
