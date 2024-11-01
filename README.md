@@ -105,7 +105,7 @@ Check out our demo video to see the application in action! Click the link below 
 
 
 ## 📊 Project Poster
-Curious about our project? View our project poster showcasing key aspects of the system [here]([https://www.canva.com/design/DAGSSn3puco/iCHapSDmDS8HxcAHrv_Hyg/view?utm_content=DAGSSn3puco&utm_campaign=designshare&utm_medium=link&utm_source=editor](https://www.canva.com/design/DAGVKp8r6wY/V9NS6fGyN8Egj4PHvPCEaQ/view?utm_content=DAGVKp8r6wY&utm_campaign=designshare&utm_medium=link&utm_source=editor)).
+Curious about our project? View our project poster showcasing key aspects of the system [here](https://www.canva.com/design/DAGVKp8r6wY/V9NS6fGyN8Egj4PHvPCEaQ/view?utm_content=DAGVKp8r6wY&utm_campaign=designshare&utm_medium=link&utm_source=editor).
 
 
 ## 🤝 Contribution Guidelines
