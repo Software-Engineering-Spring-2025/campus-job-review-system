@@ -39,6 +39,7 @@
     </div>
     <br><br>
     <!-- This section will display job postings shared by recruiter -->
+    {% if current_user.is_recruiter == False %}
     <h1 class="text-center bold">Recruiter Job Postings</h1>
     <div class="table-responsive justify-content-between">
         <table class="table table-striped table-bordered border border-white table-vcenter" style="color: white;">
@@ -64,7 +65,8 @@
                     <td><a href="{{ posting.jobLink }}" target="_blank">{{ posting.jobLink }}</a></td>
                     <td>
                         <!-- Form for deleting a posting -->
-                        <form method="POST" action="{{ url_for('delete_posting', posting_id=posting.postingId) }}">
+                        <form method="POST" action="{{ url_for('applyForJob', posting_id=posting.postingId) }}">
+                            <input type="hidden" name="recruiter_id" value="{{ posting.recruiterId }}">
                             <button type="submit" class="btn btn-blue">Share Profile with Recruiter</button>
                         </form>
                     </td>
@@ -73,6 +75,7 @@
             </tbody>
         </table>
     </div>
+    {% endif %}
 
 </div>
 

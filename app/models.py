@@ -81,3 +81,11 @@ class Recruiter_Postings(db.Model):
     jobLocation = db.Column(db.String(500), index=True, nullable=False)
     jobPayRate = db.Column(db.String(120), index=True, nullable=False)
     maxHoursAllowed = db.Column(db.Integer, nullable=False)
+
+
+class PostingApplications(db.Model):
+    """Model which stores the information of the all applications for each recruiter posting"""
+
+    postingId = db.Column(db.Integer, primary_key=True)
+    recruiterId = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
+    applicantId = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
