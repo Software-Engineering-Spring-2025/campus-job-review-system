@@ -88,3 +88,18 @@ body{
 #deleteModalLabel{
 	color: #444444;
 }
+
+.btn-blue {
+	background-color: blue;
+	color: white;
+	border: none;
+	padding: 8px 16px;
+	border-radius: 4px;
+	cursor: pointer;
+	margin-top: 5px;
+}
+
+.btn-blue:hover {
+	background-color: darkblue;
+	color: white;
+}

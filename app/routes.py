@@ -140,6 +140,7 @@ def update_review(review_id):
         "create_review.html", title="Update Review", form=form, legend="Update Review"
     )
 
+
 @app.route('/upvote/<int:review_id>', methods=['POST'])
 @login_required
 def upvote_review(review_id):
@@ -150,6 +151,7 @@ def upvote_review(review_id):
     db.session.commit()
     flash('You upvoted the review!', 'success')
     return redirect(request.referrer or url_for('page_content_post'))
+
 
 @app.route('/downvote/<int:review_id>', methods=['POST'])
 @login_required
@@ -162,6 +164,7 @@ def downvote_review(review_id):
         db.session.commit()
         flash('You downvoted the review!', 'warning')
     return redirect(request.referrer or url_for('page_content_post'))
+
 
 @app.route("/review/<int:review_id>/delete", methods=["POST"])
 @login_required
@@ -264,6 +267,12 @@ def delete_posting(posting_id):
     
     # Fetch the posting by its ID
     posting = Recruiter_Postings.query.filter_by(postingId=posting_id, recruiterId=current_user.id).first()
+    applicants_for_posting = PostingApplications.query.filter_by(postingId=posting_id, recruiterId=current_user.id).all()
+
+    if applicants_for_posting:
+        for application in applicants_for_posting:
+            db.session.delete(application)
+        db.session.commit()
     
     if posting:
         if posting.recruiterId == current_user.id:
@@ -275,6 +284,38 @@ def delete_posting(posting_id):
     
     return redirect(url_for('recruiter_postings'))
 
+
+@app.route("/recruiter/<int:posting_id>/applications", methods=["GET"])
+@login_required
+def get_applications(posting_id):
+    posting = Recruiter_Postings.query.filter_by(postingId=posting_id).first()
+    applications = PostingApplications.query.filter_by(postingId=posting_id, recruiterId=current_user.id).all()
+
+    application_user_profiles = []
+    for application in applications:
+        application_user_profiles.append(User.query.filter_by(id=application.applicantId).first())
+
+    return render_template(
+        "posting_applicants.html",
+        posting=posting,
+        application_user_profiles=application_user_profiles
+    )
+
+@app.route("/applicant_profile/<string:applicant_username>", methods=["GET"])
+@login_required
+def get_applicant(applicant_username):
+    job_experiences = JobExperience.query.filter_by(username=applicant_username).all()
+    applicant_details = User.query.filter_by(username=applicant_username).first()
+
+    print("Queried for: ", applicant_username)
+    print(applicant_details.username)
+    print("Job exp", job_experiences)
+
+    return render_template(
+        "applicant_profile.html",
+        applicant_details=applicant_details,
+        job_experiences=job_experiences
+    )
 
 @app.route("/pageContentPost", methods=["POST", "GET"])
 def page_content_post():
