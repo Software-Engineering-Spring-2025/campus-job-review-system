@@ -153,11 +153,21 @@ def delete_review(review_id):
 
 
 @app.route("/dashboard")
+@login_required
 def getVacantJobs():
     """
     An API for the users to see all the available vacancies and their details
     """
-    return render_template("dashboard.html")
+    postings = Recruiter_Postings.query.all()
+    return render_template("dashboard.html", postings=postings)
+
+
+@app.route("/apply")
+@login_required
+def applyForJob():
+    postings = Recruiter_Postings.query.all()
+    return render_template("dashboard.html", postings=postings)
+
 
 @app.route("/add_jobs", methods=['GET', 'POST'])
 @login_required
