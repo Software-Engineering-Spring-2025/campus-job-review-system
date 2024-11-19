@@ -140,6 +140,28 @@ def update_review(review_id):
         "create_review.html", title="Update Review", form=form, legend="Update Review"
     )
 
+@app.route('/upvote/<int:review_id>', methods=['POST'])
+@login_required
+def upvote_review(review_id):
+    review = Reviews.query.get_or_404(review_id)
+    if review.upvotes is None:
+        review.upvotes = 0  # Set to 0 if None
+    review.upvotes += 1
+    db.session.commit()
+    flash('You upvoted the review!', 'success')
+    return redirect(request.referrer or url_for('page_content_post'))
+
+@app.route('/downvote/<int:review_id>', methods=['POST'])
+@login_required
+def downvote_review(review_id):
+    review = Reviews.query.get_or_404(review_id)
+    if review.upvotes is None:
+        review.upvotes = 0  # Set to 0 if None
+    if review.upvotes > 0:
+        review.upvotes -= 1  # Decrement upvote count only if greater than 0
+        db.session.commit()
+        flash('You downvoted the review!', 'warning')
+    return redirect(request.referrer or url_for('page_content_post'))
 
 @app.route("/review/<int:review_id>/delete", methods=["POST"])
 @login_required

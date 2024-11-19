@@ -20,6 +20,7 @@ class Reviews(db.Model):
     review = db.Column(db.String(120), index=True, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
     recommendation = db.Column(db.Integer, nullable=False)
+    upvotes = db.Column(db.Integer, default=0)  
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
 
 

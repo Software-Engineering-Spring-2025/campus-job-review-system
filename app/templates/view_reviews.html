@@ -106,6 +106,18 @@ document.addEventListener("DOMContentLoaded", function() {
         <td>{{ entry.rating }}</td>
         <td>{{ entry.recommendation }}</td>
         <td>{{ entry.author.username }}</td>
+        <td>
+          <form action="{{ url_for('upvote_review', review_id=entry.id) }}" method="POST" style="display:inline;">
+              <button type="submit" class="btn btn-outline-success btn-sm">
+                  <i class="fa fa-thumbs-up"></i> Upvote ({{ entry.upvotes }})
+              </button>
+          </form>
+          <form action="{{ url_for('downvote_review', review_id=entry.id) }}" method="POST" style="display:inline;">
+            <button type="submit" class="btn btn-outline-danger btn-sm">
+                <i class="fa fa-thumbs-down"></i> Downvote
+            </button>
+        </form>
+      </td>
       </tr>
       {% endfor %}
     </tbody>
