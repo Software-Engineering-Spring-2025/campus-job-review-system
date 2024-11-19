@@ -158,6 +158,11 @@ def getVacantJobs():
     """
     return render_template("dashboard.html")
 
+@app.route("/add_jobs")
+@login_required
+def add_jobs():
+    return render_template("add_jobs.html")
+
 
 @app.route("/pageContentPost", methods=["POST", "GET"])
 def page_content_post():

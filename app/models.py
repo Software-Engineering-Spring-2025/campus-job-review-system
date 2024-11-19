@@ -54,3 +54,15 @@ class  User(db.Model, UserMixin):
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
+
+class Recruiter_Postings(db.Model):
+    """Model which stores the information of the postings added by recruiter"""
+
+    postingId = db.Column(db.Integer, primary_key=True)
+    recruiterId = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
+    jobTitle = db.Column(db.String(500), index=True, nullable=False)
+    jobDescription = db.Column(db.String(1000), index=True, nullable=False)
+    jobLink = db.Column(db.String(1000), index=True, nullable=False)
+    jobLocation = db.Column(db.String(500), index=True, nullable=False)
+    jobPayRate = db.Column(db.String(120), index=True, nullable=False)
+    maxHoursAllowed = db.Column(db.Integer, nullable=False)
