@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Job Application Tracker</h1>
+    
+    <!-- Form for adding new job applications -->
+    <form method="POST" action="{{ url_for('add_job_application') }}">
+        <div class="form-group">
+            <label for="job_link">Job Link</label>
+            <input 
+                type="url" 
+                class="form-control" 
+                id="job_link" 
+                name="job_link" 
+                placeholder="Enter job application link" 
+                required>
+        </div>
+        <div class="form-group">
+            <label for="applied_on">Applied On</label>
+            <input 
+                type="date" 
+                class="form-control" 
+                id="applied_on" 
+                name="applied_on" 
+                required>
+        </div>
+        <div class="form-group">
+            <label for="last_update_on">Last Update On</label>
+            <input 
+                type="date" 
+                class="form-control" 
+                id="last_update_on" 
+                name="last_update_on" 
+                required>
+        </div>
+        <div class="form-group">
+            <label for="status">Status</label>
+            <select 
+                class="form-control" 
+                id="status" 
+                name="status" 
+                required>
+                <option value="" disabled selected>Select status</option>
+                <option value="applied">Applied</option>
+                <option value="phone_screen">Phone Screen</option>
+                <option value="technical">Technical</option>
+                <option value="offer">Offer</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Job Application</button>
+    </form>
+    
+    <table class="table table-bordered table-hover mt-4">
+        <thead class="thead-light">
+            <tr>
+                <th>#</th>
+                <th>Job Link</th>
+                <th>Applied On</th>
+                <th>Last Update</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for application in job_applications %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>
+                    <a href="{{ application.job_link }}" target="_blank">
+                        {{ application.job_link }}
+                    </a>
+                </td>
+                <td>{{ application.applied_on.strftime('%Y-%m-%d') }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('update_last_update', application_id=application.id) }}" class="d-inline">
+                        <input 
+                            type="date" 
+                            name="last_update_on" 
+                            class="form-control" 
+                            value="{{ application.last_update_on.strftime('%Y-%m-%d') }}" 
+                            onchange="this.form.submit()">
+                    </form>
+                </td>
+                <td>
+                    <form method="POST" action="{{ url_for('update_status', application_id=application.id) }}" class="d-inline">
+                        <select name="status" class="form-control" onchange="this.form.submit()">
+                            <option value="applied" {% if application.status == 'applied' %}selected{% endif %}>Applied</option>
+                            <option value="phone_screen" {% if application.status == 'phone_screen' %}selected{% endif %}>Phone Screen</option>
+                            <option value="technical" {% if application.status == 'technical' %}selected{% endif %}>Technical</option>
+                            <option value="offer" {% if application.status == 'offer' %}selected{% endif %}>Offer</option>
+                        </select>
+                    </form>
+                </td>
+                <td>
+                    <form method="POST" action="{{ url_for('delete_job_application', application_id=application.id) }}" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this application?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" class="text-center">No job applications found. <a href="{{ url_for('new_job_application') }}">Add a new application</a>.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}
