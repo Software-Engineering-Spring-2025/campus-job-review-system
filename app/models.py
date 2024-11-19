@@ -82,10 +82,19 @@ class Recruiter_Postings(db.Model):
     jobPayRate = db.Column(db.String(120), index=True, nullable=False)
     maxHoursAllowed = db.Column(db.Integer, nullable=False)
 
-
 class PostingApplications(db.Model):
     """Model which stores the information of the all applications for each recruiter posting"""
 
     postingId = db.Column(db.Integer, primary_key=True)
     recruiterId = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
     applicantId = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
+
+class JobExperience(db.Model):
+    """Model to store job experiences for users."""
+    id = db.Column(db.Integer, primary_key=True)
+    job_title = db.Column(db.String(120), nullable=False)
+    company_name = db.Column(db.String(120), nullable=False)
+    location = db.Column(db.String(120), nullable=False)
+    duration = db.Column(db.String(50), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    username = db.Column(db.String(20), db.ForeignKey('user.username'), nullable=False)

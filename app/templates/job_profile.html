@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+    <h1 class="mb-4">Job Profile</h1>
+
+    <hr>
+
+    <!-- Add Job Experience Section -->
+    <div class="mb-4">
+        <h3>Add Job Experience</h3>
+        <form method="POST" action="{{ url_for('job_profile') }}">
+            <div class="mb-3">
+                <label for="job_title" class="form-label">Job Title</label>
+                <input type="text" class="form-control" id="job_title" name="job_title" placeholder="e.g., Software Engineer" required>
+            </div>
+            <div class="mb-3">
+                <label for="company_name" class="form-label">Company Name</label>
+                <input type="text" class="form-control" id="company_name" name="company_name" placeholder="e.g., Google" required>
+            </div>
+            <div class="mb-3">
+                <label for="location" class="form-label">Location</label>
+                <input type="text" class="form-control" id="location" name="location" placeholder="e.g., New York, NY" required>
+            </div>
+            <div class="mb-3">
+                <label for="duration" class="form-label">Duration</label>
+                <input type="text" class="form-control" id="duration" name="duration" placeholder="e.g., Jan 2020 - Dec 2022" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="4" placeholder="Describe your responsibilities and achievements..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-success">Add Experience</button>
+        </form>
+    </div>
+
+    <hr>
+
+    <!-- Display Job Experiences -->
+    <div class="mb-4">
+        <h3>Your Job Experiences</h3>
+        {% if job_experiences %}
+            {% for job in job_experiences %}
+                <div class="mb-3">
+                    <h5>{{ job.job_title }} at {{ job.company_name }}</h5>
+                    <p><strong>Location:</strong> {{ job.location }}</p>
+                    <p><strong>Duration:</strong> {{ job.duration }}</p>
+                    <p><strong>Description:</strong> {{ job.description }}</p>
+                    <hr>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No job experiences added yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock content %}
