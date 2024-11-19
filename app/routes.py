@@ -2,8 +2,8 @@ from flask import render_template, request, redirect, flash, url_for, abort, jso
 from flask_login import login_user, current_user, logout_user, login_required
 from app.services.job_fetcher import fetch_job_listings
 from app import app, db, bcrypt
-from app.models import Reviews, User, JobApplication
-from app.forms import RegistrationForm, LoginForm, ReviewForm, JobApplicationForm
+from app.models import Reviews, User, JobApplication, Recruiter_Postings
+from app.forms import RegistrationForm, LoginForm, ReviewForm, JobApplicationForm, PostingForm
 from datetime import datetime
 
 app.config["SECRET_KEY"] = "5791628bb0b13ce0c676dfde280ba245"
@@ -27,7 +27,7 @@ def register():
             "utf-8"
         )
         user = User(
-            username=form.username.data, email=form.email.data, password=hashed_password
+            username=form.username.data, email=form.email.data, password=hashed_password, is_recruiter=form.signup_as_recruiter.data
         )
         db.session.add(user)
         db.session.commit()
@@ -158,6 +158,66 @@ def getVacantJobs():
     An API for the users to see all the available vacancies and their details
     """
     return render_template("dashboard.html")
+
+@app.route("/add_jobs", methods=['GET', 'POST'])
+@login_required
+def add_jobs():
+    if not current_user.is_recruiter:
+        flash("Unauthorized: You must be a recruiter to post jobs.", "danger")
+        return redirect(url_for("home"))
+    
+    form = PostingForm()
+    if form.validate_on_submit():
+        posting = Recruiter_Postings(
+            postingId = form.jobPostingID.data,
+            recruiterId = current_user.id,
+            jobTitle = form.jobTitle.data,
+            jobLink = form.jobLink.data,
+            jobDescription = form.jobDescription.data,
+            jobLocation = form.jobLocation.data,
+            jobPayRate = form.jobPayRate.data,
+            maxHoursAllowed = form.maxHoursAllowed.data
+        )
+        print("Adding posting: ", posting)
+        db.session.add(posting)
+        db.session.commit()
+        flash("Job Posting added successfully!", "success")
+        return redirect(url_for("recruiter_postings"))
+    return render_template(
+        "add_jobs.html", title="Job Posting", form=form, legend="Add new posting"
+    )
+
+@app.route("/recruiter_postings")
+@login_required
+def recruiter_postings():
+    if not current_user.is_recruiter:
+        flash("Unauthorized: You must be a recruiter to post jobs.", "danger")
+        return redirect(url_for("home"))
+    
+    postings = Recruiter_Postings.query.filter(Recruiter_Postings.recruiterId == current_user.id).all()
+    return render_template(
+        "recruiter_postings.html",
+        postings=postings
+    )
+
+@app.route("/recruiter/postings/delete/<int:posting_id>", methods=["POST"])
+def delete_posting(posting_id):
+    if not current_user.is_recruiter:
+        flash("Unauthorized: You must be a recruiter to post jobs.", "danger")
+        return redirect(url_for("home"))
+    
+    # Fetch the posting by its ID
+    posting = Recruiter_Postings.query.filter_by(postingId=posting_id, recruiterId=current_user.id).first()
+    
+    if posting:
+        if posting.recruiterId == current_user.id:
+            db.session.delete(posting)
+            db.session.commit()
+            flash("Job Posting deleted successfully!", "success")
+        else:
+            flash("You are not authorized to delete this posting", "danger")
+    
+    return redirect(url_for('recruiter_postings'))
 
 
 @app.route("/pageContentPost", methods=["POST", "GET"])

@@ -43,17 +43,19 @@ class Vacancies(db.Model):
         self.maxHoursAllowed = maxHoursAllowed
 
 
-class User(db.Model, UserMixin):
+class  User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     image_file = db.Column(db.String(20), nullable=False, default="default.jpg")
     password = db.Column(db.String(60), nullable=False)
     reviews = db.relationship("Reviews", backref="author", lazy=True)
+    is_recruiter = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
-    
+
+
 class JobApplication(db.Model):
     """Model to store information about job applications"""
 
@@ -66,4 +68,16 @@ class JobApplication(db.Model):
 
     def __repr__(self):
         return f"<JobApplication {self.id} | Status: {self.status}>"
+    
+    
+class Recruiter_Postings(db.Model):
+    """Model which stores the information of the postings added by recruiter"""
 
+    postingId = db.Column(db.Integer, primary_key=True)
+    recruiterId = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
+    jobTitle = db.Column(db.String(500), index=True, nullable=False)
+    jobDescription = db.Column(db.String(1000), index=True, nullable=False)
+    jobLink = db.Column(db.String(1000), index=True, nullable=False)
+    jobLocation = db.Column(db.String(500), index=True, nullable=False)
+    jobPayRate = db.Column(db.String(120), index=True, nullable=False)
+    maxHoursAllowed = db.Column(db.Integer, nullable=False)

@@ -15,7 +15,6 @@ cached_jobs = []
 def refresh_job_data():
     global cached_jobs
     cached_jobs = fetch_job_listings()
-    print(cached_jobs)
     socketio.emit("update_jobs", cached_jobs)
 
 
@@ -25,7 +24,6 @@ scheduler.add_job(
     refresh_job_data, "interval", seconds=5, timezone=pytz.timezone("America/New_York")
 )
 
-print(scheduler)
 scheduler.start()
 
 

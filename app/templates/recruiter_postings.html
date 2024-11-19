@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    table th, table td {
+        color: white;
+        background-color: black; /* Optional: adds black background for contrast */
+    }
+</style>
+
+<section>
+    <div class="container">
+        <h2>Job Postings</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Job Title</th>
+                    <th>Location</th>
+                    <th>Pay Rate</th>
+                    <th>Description</th>
+                    <th>Max Hours</th>
+                    <th>Job Link</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for posting in postings %}
+                <tr>
+                    <td>{{ posting.jobTitle }}</td>
+                    <td>{{ posting.jobLocation }}</td>
+                    <td>{{ posting.jobPayRate }}</td>
+                    <td>{{ posting.jobDescription }}</td>
+                    <td>{{ posting.maxHoursAllowed }}</td>
+                    <td><a href="{{ posting.jobLink }}" target="_blank">{{ posting.jobLink }}</a></td>
+                    <td>
+                        <!-- Form for deleting a posting -->
+                        <form method="POST" action="{{ url_for('delete_posting', posting_id=posting.postingId) }}">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+{% endblock content %}

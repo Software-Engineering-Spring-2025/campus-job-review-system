@@ -45,6 +45,14 @@
                                     <li class="nav-item">
                                         <a class="nav-link" href="/account">ACCOUNT</a>
                                     </li>
+                                    {% if current_user.is_recruiter %}
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="/add_jobs">ADD JOBS</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="/recruiter_postings">YOUR POSTINGS</a>
+                                        </li>
+                                    {% endif %}
                                     <li class="nav-item">
                                         <a class="nav-link" href="/logout">LOGOUT</a>
                                     </li>
