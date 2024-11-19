@@ -2,7 +2,8 @@ from flask import render_template, request, redirect, flash, url_for, abort, jso
 from flask_login import login_user, current_user, logout_user, login_required
 from app.services.job_fetcher import fetch_job_listings
 from app import app, db, bcrypt
-from app.models import Reviews, User, JobApplication, Recruiter_Postings, PostingApplications
+from app.models import Reviews, User, JobApplication, Recruiter_Postings, PostingApplications, JobExperience
+
 from app.forms import RegistrationForm, LoginForm, ReviewForm, JobApplicationForm, PostingForm
 from datetime import datetime
 
@@ -403,3 +404,31 @@ def delete_job_application(application_id):
     db.session.commit()
     flash("Job application deleted successfully!", "success")
     return redirect(url_for('application_tracker'))
+
+@app.route('/job_profile', methods=['GET', 'POST'])
+@login_required
+def job_profile():
+    if request.method == 'POST':
+        # Handle job experience form submission
+        job_title = request.form.get('job_title')
+        company_name = request.form.get('company_name')
+        location = request.form.get('location')
+        duration = request.form.get('duration')
+        description = request.form.get('description')
+
+        new_job = JobExperience(
+            job_title=job_title,
+            company_name=company_name,
+            location=location,
+            duration=duration,
+            description=description,
+            username=current_user.username
+        )
+        db.session.add(new_job)
+        db.session.commit()
+        flash('Job experience added successfully!', 'success')
+        return redirect(url_for('job_profile'))
+
+    # Fetch job experiences for the current user
+    job_experiences = JobExperience.query.filter_by(username=current_user.username).all()
+    return render_template('job_profile.html', job_experiences=job_experiences)
