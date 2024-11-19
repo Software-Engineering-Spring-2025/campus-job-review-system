@@ -2,7 +2,7 @@ from flask import render_template, request, redirect, flash, url_for, abort, jso
 from flask_login import login_user, current_user, logout_user, login_required
 from app.services.job_fetcher import fetch_job_listings
 from app import app, db, bcrypt
-from app.models import Reviews, User, JobApplication, Recruiter_Postings
+from app.models import Reviews, User, JobApplication, Recruiter_Postings, PostingApplications
 from app.forms import RegistrationForm, LoginForm, ReviewForm, JobApplicationForm, PostingForm
 from datetime import datetime
 
@@ -153,11 +153,44 @@ def delete_review(review_id):
 
 
 @app.route("/dashboard")
+@login_required
 def getVacantJobs():
     """
     An API for the users to see all the available vacancies and their details
     """
-    return render_template("dashboard.html")
+    postings = Recruiter_Postings.query.all()
+    return render_template("dashboard.html", postings=postings)
+
+
+@app.route("/apply/<int:posting_id>", methods=["POST"])
+@login_required
+def applyForJob(posting_id):
+    postings = Recruiter_Postings.query.all()
+    recruiter_id = request.form.get('recruiter_id')
+    applicant_id = current_user.id
+    existing_application = PostingApplications.query.filter_by(
+        postingId=posting_id,
+        recruiterId=recruiter_id,
+        applicantId=applicant_id
+    ).first()
+
+    if existing_application:
+        # If application exists, redirect or show a message
+        flash("You have already applied for this job.", "warning")
+        return render_template("dashboard.html", postings=postings)
+    
+    new_application = PostingApplications(
+        postingId = posting_id,
+        recruiterId = recruiter_id,
+        applicantId = applicant_id
+    )
+
+    db.session.add(new_application)
+    db.session.commit()
+
+    flash("Application successfully submitted to the recruiter!", "success")
+    return render_template("dashboard.html", postings=postings)
+
 
 @app.route("/add_jobs", methods=['GET', 'POST'])
 @login_required

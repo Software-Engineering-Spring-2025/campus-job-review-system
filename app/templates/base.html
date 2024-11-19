@@ -30,9 +30,6 @@
                                     <a class="nav-link" href="/">HOME</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="/dashboard">JOB VACANCIES</a>
-                                </li>
-                                <li class="nav-item">
                                     <a class="nav-link" href="/application_tracker">TRACK APPLICATIONS</a>
                                 </li>
                                 <!-- <li class="nav-item">
@@ -44,6 +41,9 @@
                                 {% if current_user.is_authenticated %}
                                     <li class="nav-item">
                                         <a class="nav-link" href="/account">ACCOUNT</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/dashboard">JOB VACANCIES</a>
                                     </li>
                                     {% if current_user.is_recruiter %}
                                         <li class="nav-item">

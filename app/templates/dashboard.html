@@ -1,6 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
 
+<style>
+    .btn-blue {
+        background-color: blue;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-blue:hover {
+        background-color: darkblue;
+        color: white;
+    }
+</style>
+
 <div class="container-fluid banner2 text-center">
     <h1 class="text-center bold">Part-Time Job Listings</h1>
     <div class="table-responsive justify-content-between">
@@ -21,6 +37,46 @@
         <span id="page-number" class="mx-2">Page 1</span> <!-- Page number display -->
         <button id="next-btn" class="btn btn-primary mx-2">Next</button>
     </div>
+    <br><br>
+    <!-- This section will display job postings shared by recruiter -->
+    {% if current_user.is_recruiter == False %}
+    <h1 class="text-center bold">Recruiter Job Postings</h1>
+    <div class="table-responsive justify-content-between">
+        <table class="table table-striped table-bordered border border-white table-vcenter" style="color: white;">
+            <thead>
+                <tr>
+                    <th>Job Title</th>
+                    <th>Location</th>
+                    <th>Pay Rate</th>
+                    <th>Description</th>
+                    <th>Max Hours</th>
+                    <th>Job Link</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for posting in postings %}
+                <tr>
+                    <td>{{ posting.jobTitle }}</td>
+                    <td>{{ posting.jobLocation }}</td>
+                    <td>{{ posting.jobPayRate }}</td>
+                    <td>{{ posting.jobDescription }}</td>
+                    <td>{{ posting.maxHoursAllowed }}</td>
+                    <td><a href="{{ posting.jobLink }}" target="_blank">{{ posting.jobLink }}</a></td>
+                    <td>
+                        <!-- Form for deleting a posting -->
+                        <form method="POST" action="{{ url_for('applyForJob', posting_id=posting.postingId) }}">
+                            <input type="hidden" name="recruiter_id" value="{{ posting.recruiterId }}">
+                            <button type="submit" class="btn btn-blue">Share Profile with Recruiter</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
 </div>
 
 <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
