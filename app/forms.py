@@ -8,9 +8,11 @@ from wtforms import (
     BooleanField,
     RadioField,
     TextAreaField,
+    DateField,
+    SelectField,
     IntegerField
 )
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, URL
 from app.models import User
 
 
@@ -84,6 +86,19 @@ class ReviewForm(FlaskForm):
         ],
     )
     submit = SubmitField("Submit your review")
+
+
+class JobApplicationForm(FlaskForm):
+    job_link = StringField("Job Link", validators=[DataRequired(), URL()])
+    applied_on = DateField("Applied On", validators=[DataRequired()])
+    last_update_on = DateField("Last Update On", validators=[DataRequired()])
+    status = SelectField(
+        "Status",
+        choices=[("applied", "Applied"), ("phone_screen", "Phone Screen"), 
+                 ("technical", "Technical"), ("offer", "Offer")],
+        validators=[DataRequired()]
+    )
+    submit = SubmitField("Save")
 
 class PostingForm(FlaskForm):
     """Form for submitting a job posting."""

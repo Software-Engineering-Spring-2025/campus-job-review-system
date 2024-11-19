@@ -2,8 +2,9 @@ from flask import render_template, request, redirect, flash, url_for, abort, jso
 from flask_login import login_user, current_user, logout_user, login_required
 from app.services.job_fetcher import fetch_job_listings
 from app import app, db, bcrypt
-from app.models import Reviews, User, Recruiter_Postings
-from app.forms import RegistrationForm, LoginForm, ReviewForm, PostingForm
+from app.models import Reviews, User, JobApplication, Recruiter_Postings
+from app.forms import RegistrationForm, LoginForm, ReviewForm, JobApplicationForm, PostingForm
+from datetime import datetime
 
 app.config["SECRET_KEY"] = "5791628bb0b13ce0c676dfde280ba245"
 
@@ -266,3 +267,106 @@ def account():
 def get_jobs():
     job_listings = fetch_job_listings()
     return jsonify(job_listings)
+
+@app.route("/job_application/new", methods=["GET", "POST"])
+@login_required
+def new_job_application():
+    form = JobApplicationForm()  # Form class should include fields for job_link, applied_on, last_update_on, and status
+    if form.validate_on_submit():
+        # Create a new job application instance
+        application = JobApplication(
+            job_link=form.job_link.data,
+            applied_on=form.applied_on.data,
+            last_update_on=form.last_update_on.data,
+            status=form.status.data,
+            user_id=current_user.id  # Associate with the current logged-in user
+        )
+        db.session.add(application)
+        db.session.commit()
+        flash("Job application added successfully!", "success")
+        return redirect(url_for("view_job_applications"))
+    return render_template(
+        "create_job_application.html",
+        title="New Job Application",
+        form=form,
+        legend="Add Job Application"
+    )
+
+@app.route("/application_tracker")
+@login_required
+def application_tracker():
+    # Query all job applications for the logged-in user
+    job_applications = JobApplication.query.filter_by(user_id=current_user.id).all()
+    return render_template(
+        "job_applications.html",
+        title="Application Tracker",
+        job_applications=job_applications,
+    )
+
+@app.route("/add_job_application", methods=["POST"])
+@login_required
+def add_job_application():
+    job_link = request.form.get('job_link')
+    applied_on = request.form.get('applied_on')
+    last_update_on = request.form.get('last_update_on')
+    status = request.form.get('status')
+
+    new_application = JobApplication(
+        job_link=job_link,
+        applied_on=datetime.strptime(applied_on, '%Y-%m-%d').date(),
+        last_update_on=datetime.strptime(last_update_on, '%Y-%m-%d').date(),
+        status=status,
+        user_id=current_user.id
+    )
+
+    db.session.add(new_application)
+    db.session.commit()
+
+    flash("Job application added successfully!", "success")
+    return redirect(url_for('application_tracker'))
+
+@app.route("/update_status/<int:application_id>", methods=["POST"])
+@login_required
+def update_status(application_id):
+    application = JobApplication.query.get_or_404(application_id)
+
+    if application.user_id != current_user.id:
+        flash("You cannot update this application.", "danger")
+        return redirect(url_for('application_tracker'))
+
+    status = request.form.get('status')
+    application.status = status
+    db.session.commit()
+
+    flash("Application status updated successfully!", "success")
+    return redirect(url_for('application_tracker'))
+
+@app.route("/update_last_update/<int:application_id>", methods=["POST"])
+@login_required
+def update_last_update(application_id):
+    application = JobApplication.query.get_or_404(application_id)
+
+    if application.user_id != current_user.id:
+        flash("You cannot update this application.", "danger")
+        return redirect(url_for('application_tracker'))
+
+    last_update_on = request.form.get('last_update_on')
+    application.last_update_on = datetime.strptime(last_update_on, '%Y-%m-%d').date()
+    db.session.commit()
+
+    flash("Application last update date updated successfully!", "success")
+    return redirect(url_for('application_tracker'))
+
+@app.route("/delete_job_application/<int:application_id>", methods=["POST"])
+@login_required
+def delete_job_application(application_id):
+    application = JobApplication.query.get_or_404(application_id)
+
+    if application.user_id != current_user.id:
+        flash("You cannot delete this application.", "danger")
+        return redirect(url_for('application_tracker'))
+
+    db.session.delete(application)
+    db.session.commit()
+    flash("Job application deleted successfully!", "success")
+    return redirect(url_for('application_tracker'))
