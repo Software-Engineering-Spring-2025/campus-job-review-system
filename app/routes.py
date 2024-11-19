@@ -26,7 +26,7 @@ def register():
             "utf-8"
         )
         user = User(
-            username=form.username.data, email=form.email.data, password=hashed_password
+            username=form.username.data, email=form.email.data, password=hashed_password, is_recruiter=form.signup_as_recruiter.data
         )
         db.session.add(user)
         db.session.commit()

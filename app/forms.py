@@ -24,6 +24,7 @@ class RegistrationForm(FlaskForm):
     confirm_password = PasswordField(
         "Confirm Password", validators=[DataRequired(), EqualTo("password")]
     )
+    signup_as_recruiter = BooleanField('Signup as Recruiter')
     submit = SubmitField("Sign Up")
 
     def validate_username(self, username):
