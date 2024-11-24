@@ -99,3 +99,14 @@ class JobExperience(db.Model):
     duration = db.Column(db.String(50), nullable=False)
     description = db.Column(db.Text, nullable=False)
     username = db.Column(db.String(20), db.ForeignKey('user.username'), nullable=False)
+
+class Meetings(db.Model):
+    """Model to store meeting information."""
+    id = db.Column(db.Integer, primary_key=True)
+    recruiter_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    applicant_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    meeting_time = db.Column(db.DateTime, nullable=False)  # Time of the meeting
+    posting_id = db.Column(db.Integer, db.ForeignKey("recruiter_postings.postingId"), nullable=True)  # Optional job posting
+
+    def __repr__(self):
+        return f"<Meeting {self.id} | Time: {self.meeting_time}>"

@@ -2,7 +2,7 @@ from flask import render_template, request, redirect, flash, url_for, abort, jso
 from flask_login import login_user, current_user, logout_user, login_required
 from app.services.job_fetcher import fetch_job_listings
 from app import app, db, bcrypt
-from app.models import Reviews, User, JobApplication, Recruiter_Postings, PostingApplications, JobExperience
+from app.models import Meetings, Reviews, User, JobApplication, Recruiter_Postings, PostingApplications, JobExperience
 
 from app.forms import RegistrationForm, LoginForm, ReviewForm, JobApplicationForm, PostingForm
 from datetime import datetime
@@ -316,6 +316,41 @@ def get_applicant(applicant_username):
         applicant_details=applicant_details,
         job_experiences=job_experiences
     )
+
+@app.route('/schedule_meeting/<string:applicant_username>', methods=['POST'])
+@login_required
+def schedule_meeting(applicant_username):
+    meeting_time = request.form.get('meeting_time')
+
+    # Get applicant's user ID
+    applicant = User.query.filter_by(username=applicant_username).first()
+    if not applicant:
+        flash("Applicant not found.")
+        return redirect(request.referrer)
+
+    # Create and save the meeting
+    new_meeting = Meetings(
+        recruiter_id=current_user.id,
+        applicant_id=applicant.id,
+        meeting_time=meeting_time
+    )
+    db.session.add(new_meeting)
+    db.session.commit()
+
+    flash(f"Meeting scheduled with {applicant_username} at {meeting_time}.")
+    return redirect(request.referrer)
+
+@app.route('/recruiter/meetings', methods=['GET'])
+@login_required
+def recruiter_meetings():
+    meetings = Meetings.query.filter_by(recruiter_id=current_user.id).all()
+    return render_template("recruiter_meetings.html", meetings=meetings)
+
+@app.route('/applicant/meetings', methods=['GET'])
+@login_required
+def applicant_meetings():
+    meetings = Meetings.query.filter_by(applicant_id=current_user.id).all()
+    return render_template("applicant_meetings.html", meetings=meetings)
 
 @app.route("/pageContentPost", methods=["POST", "GET"])
 def page_content_post():

@@ -1,0 +1,25 @@
+<h2>My Scheduled Meetings</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Recruiter</th>
+            <th>Meeting Time</th>
+            <th>Related Job Posting</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for meeting in meetings %}
+        <tr>
+            <td>{{ meeting.recruiter.username }}</td>
+            <td>{{ meeting.meeting_time }}</td>
+            <td>
+                {% if meeting.posting_id %}
+                    Posting ID: {{ meeting.posting_id }}
+                {% else %}
+                    Not Linked
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

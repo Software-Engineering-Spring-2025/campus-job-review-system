@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Meeting Confirmation</title>
+</head>
+<body>
+    <h1>Meeting Scheduled</h1>
+    <p>Meeting has been successfully scheduled with <strong>{{ applicant_username }}</strong>.</p>
+    <p>Meeting Time: <strong>{{ meeting_time }}</strong></p>
+    <a href="{{ url_for('view_job_posting', posting_id=posting_id) }}">Back to Job Posting</a>
+</body>
+</html>

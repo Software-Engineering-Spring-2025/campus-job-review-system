@@ -28,8 +28,14 @@
                     <td>{{ user.email }}</td>
                     <td>
                         <!-- Form for viewing applicant profile -->
-                        <form method="GET" action="{{ url_for('get_applicant', applicant_username=user.username) }}">
+                        <form method="GET" action="{{ url_for('get_applicant', applicant_username=user.username) }}" style="display: inline;">
                             <button type="submit" class="btn btn-blue">View Profile</button>
+                        </form>
+                        
+                        <!-- Form for scheduling a meeting -->
+                        <form method="POST" action="{{ url_for('schedule_meeting', applicant_username=user.username) }}" style="display: inline;">
+                            <input type="datetime-local" name="meeting_time" required style="margin-right: 10px;">
+                            <button type="submit" class="btn btn-orange">Schedule Meeting</button>
                         </form>
                     </td>
                 </tr>
