@@ -13,8 +13,8 @@
             <td>{{ meeting.applicant.username }}</td>
             <td>{{ meeting.meeting_time }}</td>
             <td>
-                {% if meeting.posting_id %}
-                    Posting ID: {{ meeting.posting_id }}
+                {% if meeting.job_posting %}
+                    {{ meeting.job_posting.jobTitle }}
                 {% else %}
                     Not Linked
                 {% endif %}

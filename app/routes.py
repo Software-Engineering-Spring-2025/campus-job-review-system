@@ -320,24 +320,32 @@ def get_applicant(applicant_username):
 @app.route('/schedule_meeting/<string:applicant_username>', methods=['POST'])
 @login_required
 def schedule_meeting(applicant_username):
-    meeting_time = request.form.get('meeting_time')
+    meeting_time_str = request.form.get('meeting_time')  # Get the string from the form
+    try:
+        # Convert the string to a datetime object
+        meeting_time = datetime.strptime(meeting_time_str, "%Y-%m-%dT%H:%M")
+    except ValueError:
+        flash("Invalid date format. Please use the provided date-time picker.", "danger")
+        return redirect(request.referrer)
 
-    # Get applicant's user ID
+    # Fetch the applicant from the database
     applicant = User.query.filter_by(username=applicant_username).first()
     if not applicant:
-        flash("Applicant not found.")
+        flash("Applicant not found.", "danger")
         return redirect(request.referrer)
 
     # Create and save the meeting
     new_meeting = Meetings(
         recruiter_id=current_user.id,
         applicant_id=applicant.id,
-        meeting_time=meeting_time
+        meeting_time=meeting_time,
+        posting_id=None  # Add this if the meeting isn't linked to a job posting
     )
+
     db.session.add(new_meeting)
     db.session.commit()
 
-    flash(f"Meeting scheduled with {applicant_username} at {meeting_time}.")
+    flash(f"Meeting scheduled with {applicant_username} on {meeting_time}.", "success")
     return redirect(request.referrer)
 
 @app.route('/recruiter/meetings', methods=['GET'])

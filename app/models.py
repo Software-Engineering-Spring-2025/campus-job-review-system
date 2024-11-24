@@ -74,6 +74,8 @@ class JobApplication(db.Model):
 class Recruiter_Postings(db.Model):
     """Model which stores the information of the postings added by recruiter"""
 
+    __tablename__ = "recruiter_postings"  # Explicit table name
+
     postingId = db.Column(db.Integer, primary_key=True)
     recruiterId = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
     jobTitle = db.Column(db.String(500), index=True, nullable=False)
@@ -82,6 +84,7 @@ class Recruiter_Postings(db.Model):
     jobLocation = db.Column(db.String(500), index=True, nullable=False)
     jobPayRate = db.Column(db.String(120), index=True, nullable=False)
     maxHoursAllowed = db.Column(db.Integer, nullable=False)
+
 
 class PostingApplications(db.Model):
     """Model which stores the information of the all applications for each recruiter posting"""
@@ -102,11 +105,20 @@ class JobExperience(db.Model):
 
 class Meetings(db.Model):
     """Model to store meeting information."""
+    __tablename__ = "meetings"  # Explicit table name
+
     id = db.Column(db.Integer, primary_key=True)
     recruiter_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     applicant_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     meeting_time = db.Column(db.DateTime, nullable=False)  # Time of the meeting
     posting_id = db.Column(db.Integer, db.ForeignKey("recruiter_postings.postingId"), nullable=True)  # Optional job posting
 
+    # Relationships
+    recruiter = db.relationship("User", foreign_keys=[recruiter_id], backref="recruiter_meetings")
+    applicant = db.relationship("User", foreign_keys=[applicant_id], backref="applicant_meetings")
+    job_posting = db.relationship("Recruiter_Postings", foreign_keys=[posting_id], backref="meetings")
+
     def __repr__(self):
         return f"<Meeting {self.id} | Time: {self.meeting_time}>"
+
+

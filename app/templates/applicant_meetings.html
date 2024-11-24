@@ -1,4 +1,4 @@
-<h2>My Scheduled Meetings</h2>
+<h2>Your Scheduled Meetings</h2>
 <table class="table">
     <thead>
         <tr>
@@ -13,8 +13,8 @@
             <td>{{ meeting.recruiter.username }}</td>
             <td>{{ meeting.meeting_time }}</td>
             <td>
-                {% if meeting.posting_id %}
-                    Posting ID: {{ meeting.posting_id }}
+                {% if meeting.job_posting %}
+                    {{ meeting.job_posting.jobTitle }}
                 {% else %}
                     Not Linked
                 {% endif %}
