@@ -28,12 +28,25 @@
                     <td>{{ user.email }}</td>
                     <td>
                         <!-- Form for viewing applicant profile -->
-                        <form method="GET" action="{{ url_for('get_applicant', applicant_username=user.username) }}">
-                            <button type="submit" class="btn btn-blue">View Profile</button>
+                        <form method="GET" action="{{ url_for('get_applicant', applicant_username=user.username) }}" style="display: inline;">
+                            <button type="submit" class="btn btn-info">View Profile</button>
                         </form>
+                        
+                        <!-- Form for scheduling a meeting -->
+                        <form method="POST" action="{{ url_for('schedule_meeting', applicant_username=user.username) }}" style="display: inline;">
+                            <input type="datetime-local" name="meeting_time" required style="margin-right: 10px;">
+                            <input type="hidden" name="posting_id" value="{{ posting.postingId }}">
+                            <button type="submit" class="btn btn-primary">Schedule Meeting</button>
+                        </form>
+                        
                     </td>
                 </tr>
                 {% endfor %}
+                {% if application_user_profiles|length == 0 %}
+                <tr>
+                    <td colspan="3" class="text-center">No applicants found for this job posting.</td>
+                </tr>
+                {% endif %}
             </tbody>
         </table>
     </div>

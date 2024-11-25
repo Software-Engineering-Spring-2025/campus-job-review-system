@@ -1,89 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewreport" content="width=device-width, initial-scale=1.0">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-        <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
-        <title>
-            NCSU Campus Job
-        </title>
-        <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
-        <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet" />
-        <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='/css/index.css')}}" />
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
-    </head>
-    <body>
-
-        <div class="container-fluid banner">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="navbar">
-                        <nav class="navbar navbar-sm">
-                            <div class="navbar-brand">NC State Campus Jobs</div>
-                            <ul class="nav">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewreport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NCSU Campus Job</title>
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='/css/index.css')}}" />
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container-fluid banner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="navbar">
+                    <nav class="navbar navbar-sm">
+                        <div class="navbar-brand">NC State Campus Jobs</div>
+                        <ul class="nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/">HOME</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/application_tracker">TRACK APPLICATIONS</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/job_profile">JOB PROFILE</a>
+                            </li>
+                            {% if current_user.is_authenticated %}
                                 <li class="nav-item">
-                                    <a class="nav-link" href="/">HOME</a>
+                                    <a class="nav-link" href="/account">ACCOUNT</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="/application_tracker">TRACK APPLICATIONS</a>
+                                    <a class="nav-link" href="/dashboard">JOB VACANCIES</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="/job_profile">JOB PROFILE</a>
-                                </li>
-                                <!-- <li class="nav-item">
-                                    <a class="nav-link" href="#">ABOUT</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">CONTACT</a>
-                                </li> -->
-                                {% if current_user.is_authenticated %}
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="/account">ACCOUNT</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="/dashboard">JOB VACANCIES</a>
-                                    </li>
                                     {% if current_user.is_recruiter %}
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="/add_jobs">ADD JOBS</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="/recruiter_postings">YOUR POSTINGS</a>
-                                        </li>
+                                        <a class="nav-link" href="/recruiter/meetings">SCHEDULED MEETINGS</a>
+                                    {% else %}
+                                        <a class="nav-link" href="/applicant/meetings">MY MEETINGS</a>
                                     {% endif %}
+                                </li>
+                                {% if current_user.is_recruiter %}
                                     <li class="nav-item">
-                                        <a class="nav-link" href="/logout">LOGOUT</a>
+                                        <a class="nav-link" href="/add_jobs">ADD JOBS</a>
                                     </li>
-                                {% else %}
                                     <li class="nav-item">
-                                        <a class="nav-link" href="/login">LOGIN</a>
+                                        <a class="nav-link" href="/recruiter_postings">YOUR POSTINGS</a>
                                     </li>
                                 {% endif %}
-                            </ul>
-                        </nav>
-                    </div>
-
-                    <div class="main">
-                        {% with messages = get_flashed_messages(with_categories=true) %}
-                            {% if messages %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/logout">LOGOUT</a>
+                                </li>
+                            {% else %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/login">LOGIN</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+                <div class="main">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
                             {% for category, message in messages %}
                                 <div class="alert alert-{{ category }}">
-                                {{ message }}
+                                    {{ message }}
                                 </div>
                             {% endfor %}
-                            {% endif %}
-                        {% endwith %}
-
-                        {% block content %}{% endblock %}
-                    </div>
+                        {% endif %}
+                    {% endwith %}
+                    {% block content %}{% endblock %}
                 </div>
             </div>
         </div>
-
-    </body>
+    </div>
+</body>
 </html>
