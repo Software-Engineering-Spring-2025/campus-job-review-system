@@ -499,12 +499,19 @@ def job_profile():
 @app.route('/schedule_meeting/<string:applicant_username>', methods=['POST'])
 @login_required
 def schedule_meeting(applicant_username):
-    meeting_time_str = request.form.get('meeting_time')  # Get the string from the form
+    meeting_time_str = request.form.get('meeting_time')  # Get the meeting time
+    posting_id = request.form.get('posting_id')  # Get the posting ID
+
     try:
-        # Convert the string to a datetime object
+        # Convert the meeting time string to a datetime object
         meeting_time = datetime.strptime(meeting_time_str, "%Y-%m-%dT%H:%M")
     except ValueError:
         flash("Invalid date format. Please use the provided date-time picker.", "danger")
+        return redirect(request.referrer)
+
+    # Validate posting ID
+    if not posting_id:
+        flash("No job posting associated with this meeting.", "danger")
         return redirect(request.referrer)
 
     # Fetch the applicant from the database
@@ -513,18 +520,24 @@ def schedule_meeting(applicant_username):
         flash("Applicant not found.", "danger")
         return redirect(request.referrer)
 
+    # Validate the job posting exists
+    job_posting = Recruiter_Postings.query.filter_by(postingId=posting_id, recruiterId=current_user.id).first()
+    if not job_posting:
+        flash("Job posting not found or you are not authorized to schedule a meeting for this posting.", "danger")
+        return redirect(request.referrer)
+
     # Create and save the meeting
     new_meeting = Meetings(
         recruiter_id=current_user.id,
         applicant_id=applicant.id,
         meeting_time=meeting_time,
-        posting_id=None  # Add this if the meeting isn't linked to a job posting
+        posting_id=posting_id  # Associate the meeting with the job posting
     )
 
     db.session.add(new_meeting)
     db.session.commit()
 
-    flash(f"Meeting scheduled with {applicant_username} on {meeting_time}.", "success")
+    flash(f"Meeting scheduled with {applicant_username} on {meeting_time} for job posting '{job_posting.jobTitle}'.", "success")
     return redirect(request.referrer)
 
 @app.route('/recruiter/meetings', methods=['GET'])

@@ -35,6 +35,7 @@
                         <!-- Form for scheduling a meeting -->
                         <form method="POST" action="{{ url_for('schedule_meeting', applicant_username=user.username) }}" style="display: inline;">
                             <input type="datetime-local" name="meeting_time" required style="margin-right: 10px;">
+                            <input type="hidden" name="posting_id" value="{{ posting.postingId }}">
                             <button type="submit" class="btn btn-primary">Schedule Meeting</button>
                         </form>
                         
