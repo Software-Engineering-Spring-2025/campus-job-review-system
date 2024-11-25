@@ -2,9 +2,11 @@ import os
 import sys
 import pytest
 from app import app, db
-from app.models import User, Reviews, JobApplication, JobExperience
+from app.models import User, Reviews, JobApplication, JobExperience, Recruiter_Postings, PostingApplications
 from datetime import datetime
 from unittest.mock import patch
+from flask import url_for 
+from flask_login import login_user, current_user
 
 @pytest.fixture
 def client():
@@ -51,13 +53,14 @@ def create_reviews(client, login_user):
 
 @pytest.fixture
 def login_user(client):
-    user = User(username="testuser", email="testuser@example.com", password="testpassword")
+    user = User(username="testuser", email="testuser@example.com", password="testpassword", is_recruiter=True)
     db.session.add(user)
     db.session.commit()
 
     # Log in the user
     with client.session_transaction() as session:
         session['user_id'] = user.id
+        
     return user
 
 @pytest.fixture
@@ -429,6 +432,210 @@ def test_invalid_account_access(client):
 def test_user_session_persistence(client, login_user):
     with client.session_transaction() as session:
         assert session.get('user_id') == login_user.id
+
+
+# Test for add jobs GET request
+def test_add_jobs_get_request(client, login_user):
+    # Log in as a recruiter
+    with client.session_transaction() as session:
+        session['_user_id'] = login_user.id
+        session['is_recruiter'] = True
+
+    response = client.get('/add_jobs')
+
+    assert response.status_code == 200
+
+
+# Test for add jobs POST request to upload new job postings
+def test_add_jobs_post_request(client, login_user):
+    # Log in as a recruiter
+    with client.session_transaction() as session:
+        session['_user_id'] = login_user.id
+        session['is_recruiter'] = True
+
+    form_data = {
+        'jobPostingID': '12345',
+        'jobTitle': 'Software Engineer',
+        'jobLink': 'https://example.com/job',
+        'jobDescription': 'Develop and maintain software applications.',
+        'jobLocation': 'Remote',
+        'jobPayRate': '50',
+        'maxHoursAllowed': '40'
+    }
+
+    response = client.post('/add_jobs', data=form_data, follow_redirects=True)
+
+    assert response.status_code == 200
+    
+
+# Test recruiters posting fetch query
+def test_recruiter_postings_as_recruiter(client, login_user):
+    with client.session_transaction() as session:
+        session['_user_id'] = login_user.id
+        session['is_recruiter'] = True
+
+    # Create some sample postings for the recruiter
+    from app.models import Recruiter_Postings
+    posting = Recruiter_Postings(
+        postingId=1,
+        recruiterId=login_user.id,
+        jobTitle="Software Engineer",
+        jobLink="https://example.com/software-engineer",
+        jobDescription="Develop and maintain software applications.",
+        jobLocation="Remote",
+        jobPayRate=50,
+        maxHoursAllowed=40
+    )
+
+    db.session.add(posting)
+    db.session.commit()
+
+    # Send GET request
+    response = client.get('/recruiter_postings')
+
+    # Assert response status
+    assert response.status_code == 200
+
+
+# Test delete posting for recruiter
+def test_delete_posting_as_recruiter(client, login_user):
+    with client.session_transaction() as session:
+        session['_user_id'] = login_user.id
+        session['is_recruiter'] = True
+
+    # Create a posting to delete
+    from app.models import Recruiter_Postings, db
+    posting = Recruiter_Postings(
+        postingId=1,
+        recruiterId=login_user.id,
+        jobTitle="Software Engineer",
+        jobLink="https://example.com/software-engineer",
+        jobDescription="Develop and maintain software applications.",
+        jobLocation="Remote",
+        jobPayRate=50,
+        maxHoursAllowed=40
+    )
+    db.session.add(posting)
+    db.session.commit()
+
+    # Send POST request to delete the posting
+    response = client.post(f'/recruiter/postings/delete/{posting.postingId}', follow_redirects=True)
+
+    # Assert redirection to recruiter_postings page
+    assert response.status_code == 200
+
+
+# Test application for the job
+def test_apply_for_job_first_time(client, login_user):
+    
+    posting = Recruiter_Postings(
+        postingId=1,
+        recruiterId=login_user.id,
+        jobTitle="Software Engineer",
+        jobLink="https://example.com/software-engineer",
+        jobDescription="Develop software applications.",
+        jobLocation="Remote",
+        jobPayRate=50,
+        maxHoursAllowed=40
+    )
+    db.session.add(posting)
+    db.session.commit()
+
+    response = client.post(f'/apply/{posting.postingId}', data={
+        'recruiter_id': login_user.id
+    }, follow_redirects=True)
+
+    assert response.status_code == 200
+
+
+# Test applying for the already applied job
+def test_apply_for_job_already_applied(client, login_user):    
+    posting = Recruiter_Postings(
+        postingId=1,
+        recruiterId=login_user.id,
+        jobTitle="Software Engineer",
+        jobLink="https://example.com/software-engineer",
+        jobDescription="Develop software applications.",
+        jobLocation="Remote",
+        jobPayRate=50,
+        maxHoursAllowed=40
+    )
+    db.session.add(posting)
+    db.session.commit()
+
+    # Apply for the job for the first time
+    client.post(f'/apply/{posting.postingId}', data={'recruiter_id': login_user.id}, follow_redirects=True)
+
+    # Try applying again for the same job
+    response = client.post(f'/apply/{posting.postingId}', data={'recruiter_id': login_user.id}, follow_redirects=True)
+
+    assert response.status_code == 200
+
+# Test get applications request for recruiters
+def test_get_applications(client, login_user):    
+    posting = Recruiter_Postings(
+        postingId=1,
+        recruiterId=login_user.id,
+        jobTitle="Software Engineer",
+        jobLink="https://example.com/software-engineer",
+        jobDescription="Develop software applications.",
+        jobLocation="Remote",
+        jobPayRate=50,
+        maxHoursAllowed=40
+    )
+    db.session.add(posting)
+    db.session.commit()
+
+    # Create an application for this job by the applicant
+    application = PostingApplications(
+        postingId=posting.postingId,
+        recruiterId=login_user.id,
+        applicantId=login_user.id
+    )
+    db.session.add(application)
+    db.session.commit()
+
+    response = client.get(f'/recruiter/{posting.postingId}/applications')
+
+    assert response.status_code == 302
+
+
+# Test get applications request without applicants for recruiters
+def test_get_applications_no_applications(client, login_user):
+    posting = Recruiter_Postings(
+        postingId=1,
+        recruiterId=login_user.id,
+        jobTitle="Software Engineer",
+        jobLink="https://example.com/software-engineer",
+        jobDescription="Develop software applications.",
+        jobLocation="Remote",
+        jobPayRate=50,
+        maxHoursAllowed=40
+    )
+    db.session.add(posting)
+    db.session.commit()
+
+    response = client.get(f'/recruiter/{posting.postingId}/applications')
+
+    assert response.status_code == 302
+
+
+# Test get applicants for a recruiter posting
+def test_get_applicant_profile(client, login_user):    
+    job_experience = JobExperience(
+        username=login_user.username,
+        company_name="Example Corp",
+        job_title="Software Developer",
+        location="Raleigh",
+        duration="1 year",
+        description="Software Engineering"
+    )
+    db.session.add(job_experience)
+    db.session.commit()
+
+    response = client.get(f'/applicant_profile/{login_user.username}')
+
+    assert response.status_code == 302
 
 
 # Test review creation with invalid rating input
