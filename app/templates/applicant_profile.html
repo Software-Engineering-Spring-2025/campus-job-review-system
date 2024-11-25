@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section>
+    <div class="container">
+         <!-- Display Applicant Profile -->
+         <div class="mb-4">
+            <h3>Candidate's Profile</h3>
+            {% if applicant_details %}
+                <div class="mb-3">
+                    <p><strong>Username:</strong> {{ applicant_details.username }}</p>
+                    <p><strong>Email:</strong> {{ applicant_details.email }}</p>
+                    <hr>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Display Job Experiences -->
+        <div class="mb-4">
+            <h3>Candidate's Job Experiences</h3>
+            <br>
+            {% if job_experiences and job_experiences|length > 0 %}
+                {% for job in job_experiences %}
+                    <div class="mb-3">
+                        <h5>{{ job.job_title }} @ {{ job.company_name }}</h5>
+                        <p><strong>Location:</strong> {{ job.location }}</p>
+                        <p><strong>Duration:</strong> {{ job.duration }}</p>
+                        <p><strong>Description:</strong> {{ job.description }}</p>
+                        <hr>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No job experiences added yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{% endblock content %}

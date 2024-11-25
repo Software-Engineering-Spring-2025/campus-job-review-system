@@ -4,7 +4,7 @@
 <style>
     table th, table td {
         color: white;
-        background-color: black; /* Optional: adds black background for contrast */
+        background-color: black;
     }
 </style>
 
@@ -34,8 +34,13 @@
                     <td><a href="{{ posting.jobLink }}" target="_blank">{{ posting.jobLink }}</a></td>
                     <td>
                         <!-- Form for deleting a posting -->
-                        <form method="POST" action="{{ url_for('delete_posting', posting_id=posting.postingId) }}">
+                        <form method="POST" action="{{ url_for('delete_posting', posting_id=posting.postingId) }}" onsubmit="return confirmDelete();">
                             <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+
+                        <!-- Form for viewing applications -->
+                        <form method="GET" action="{{ url_for('get_applications', posting_id=posting.postingId) }}">
+                            <button type="submit" class="btn btn-blue">View Applicants</button>
                         </form>
                     </td>
                 </tr>
@@ -44,5 +49,11 @@
         </table>
     </div>
 </section>
+
+<script>
+    function confirmDelete() {
+        return confirm("Are you sure you want to delete this posting?");
+    }
+</script>
 
 {% endblock content %}

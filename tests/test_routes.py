@@ -2,7 +2,8 @@ import os
 import sys
 import pytest
 from app import app, db
-from app.models import User, Reviews, Recruiter_Postings
+from app.models import User, Reviews, JobApplication, JobExperience, Recruiter_Postings
+from datetime import datetime
 from unittest.mock import patch
 from flask import url_for 
 from flask_login import login_user, current_user
@@ -71,6 +72,73 @@ def create_review(login_user):
     db.session.add(review)
     db.session.commit()
     return review
+
+@pytest.fixture
+def test_review():
+    review = Reviews(
+        department="Engineering",
+        locations="Remote",
+        job_title="Test Job",
+        job_description="This is a test job description.",
+        hourly_pay="50",
+        benefits="Health Insurance, Paid Time Off",
+        review="Great place to work!",
+        rating=5,
+        recommendation=1,  # Assuming 1 means "Yes" and 0 means "No"
+        upvotes=0,  # Initial upvote count
+        user_id=1  # Ensure this matches a valid user in your test database
+    )
+    db.session.add(review)
+    db.session.commit()
+    return review
+
+@pytest.fixture
+def test_job_applications(login_user):
+    # Add multiple job applications for the test user
+    applications = [
+        JobApplication(
+            job_link="https://company-a.com/jobs/software-engineer",
+            applied_on=datetime(2024, 1, 15).date(),
+            last_update_on=datetime(2024, 1, 20).date(),
+            status="Applied",
+            user_id=login_user.id,
+        ),
+        JobApplication(
+            job_link="https://company-b.com/jobs/data-scientist",
+            applied_on=datetime(2024, 2, 10).date(),
+            last_update_on=datetime(2024, 2, 15).date(),
+            status="Interview Scheduled",
+            user_id=login_user.id,
+        ),
+    ]
+    db.session.add_all(applications)
+    db.session.commit()
+    return applications
+
+@pytest.fixture
+def test_job_experiences(login_user):
+    experiences = [
+        JobExperience(
+            job_title="Software Engineer",
+            company_name="TechCorp",
+            location="Remote",
+            duration="2 years",
+            description="Worked on web applications.",
+            username=login_user.username
+        ),
+        JobExperience(
+            job_title="Data Scientist",
+            company_name="DataCorp",
+            location="New York",
+            duration="1 year",
+            description="Analyzed large datasets.",
+            username=login_user.username
+        )
+    ]
+    db.session.add_all(experiences)
+    db.session.commit()
+    return experiences
+
 
 def test_index_route(client):
     response = client.get('/')
@@ -156,10 +224,8 @@ def test_update_review_post(client, login_user, create_review):
     }, follow_redirects=True)
     assert response.status_code == 200  # Check if it updates successfully
 
-
-
 def test_dashboard_route(client):
-    response = client.get('/dashboard')
+    response = client.get('/dashboard', follow_redirects = True)
     assert response.status_code == 200
 
 def test_account_route(client):
@@ -529,3 +595,84 @@ def test_create_review_invalid_rating(client, login_user):
 def test_view_nonexistent_review(client):
     response = client.get('/review/9999', follow_redirects=True)
     assert b'not found' in response.data.lower()
+
+def test_upvote_review(client, login_user, test_review):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id  
+
+    response = client.post(f'/upvote/{test_review.id}', follow_redirects=True)
+
+    assert response.status_code == 200
+
+def test_downvote_review(client, login_user, test_review):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id  
+
+    response = client.post(f'/downvote/{test_review.id}', follow_redirects=True)
+
+    assert response.status_code == 200
+
+def test_application_tracker_authenticated(client, login_user):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id  
+
+    response = client.get("/application_tracker", follow_redirects=True)
+
+    assert response.status_code == 200
+
+def test_application_tracker_authenticated(client, login_user):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id  
+
+    response = client.post("/add_job_application", follow_redirects=True)
+
+    assert response.status_code == 200
+
+def test_update_status_success(client, login_user, test_job_applications):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+    application_id = test_job_applications[0].id
+    response = client.post(f"/update_status/{application_id}", data={"status": "Interview Scheduled"}, follow_redirects=True)
+
+    assert response.status_code == 200
+
+def test_delete_job_application_success(client, login_user, test_job_applications):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+    application_id = test_job_applications[0].id
+    response = client.post(f"/delete_job_application/{application_id}", follow_redirects=True)
+
+    assert response.status_code == 200
+    
+def test_update_last_update_success(client, login_user, test_job_applications):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+    application_id = test_job_applications[0].id
+    response = client.post(
+        f"/update_last_update/{application_id}",
+        data={"last_update_on": "2024-11-01"},
+        follow_redirects=True
+    )
+
+    assert response.status_code == 200
+
+def test_job_profile_get(client, login_user, test_job_experiences):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+    response = client.get('/job_profile', follow_redirects = True)
+
+    assert response.status_code == 200
+    print("responsee:",response.data)
+    experience = JobExperience.query.filter_by(
+        job_title="Software Engineer",
+        company_name="TechCorp",
+        username=login_user.username
+    ).first()
+    assert experience is not None
+    assert experience.location == "Remote"
+    assert experience.duration == "2 years"
+    assert experience.description == "Worked on web applications."
