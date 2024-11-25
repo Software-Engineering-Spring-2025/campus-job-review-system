@@ -20,8 +20,11 @@ class Reviews(db.Model):
     review = db.Column(db.String(120), index=True, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
     recommendation = db.Column(db.Integer, nullable=False)
-    upvotes = db.Column(db.Integer, default=0)  
+    upvotes = db.Column(db.Integer, default=0)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+
+    def __repr__(self):
+        return f"<Review {self.id} - {self.job_title}>"
 
 
 class Vacancies(db.Model):
@@ -43,39 +46,48 @@ class Vacancies(db.Model):
         self.jobPayRate = jobPayRate
         self.maxHoursAllowed = maxHoursAllowed
 
+    def __repr__(self):
+        return f"<Vacancy {self.vacancyId} - {self.jobTitle}>"
 
-class  User(db.Model, UserMixin):
+
+class User(db.Model, UserMixin):
+    """Model to store user information"""
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     image_file = db.Column(db.String(20), nullable=False, default="default.jpg")
     password = db.Column(db.String(60), nullable=False)
-    reviews = db.relationship("Reviews", backref="author", lazy=True)
     is_recruiter = db.Column(db.Boolean, default=False)
 
+    # Relationships
+    reviews = db.relationship("Reviews", backref="author", lazy=True)
+
     def __repr__(self):
-        return f"User('{self.username}', '{self.email}', '{self.image_file}')"
+        return f"User('{self.username}', '{self.email}')"
 
 
 class JobApplication(db.Model):
     """Model to store information about job applications"""
 
     id = db.Column(db.Integer, primary_key=True)
-    job_link = db.Column(db.String(255), nullable=False)  
-    applied_on = db.Column(db.Date, nullable=False)       
-    last_update_on = db.Column(db.Date, nullable=False)   
-    status = db.Column(db.String(50), nullable=False)     
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)  
+    job_link = db.Column(db.String(255), nullable=False)
+    applied_on = db.Column(db.Date, nullable=False)
+    last_update_on = db.Column(db.Date, nullable=False)
+    status = db.Column(db.String(50), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
     def __repr__(self):
-        return f"<JobApplication {self.id} | Status: {self.status}>"
-    
-    
+        return f"<JobApplication {self.id} - {self.status}>"
+
+
 class Recruiter_Postings(db.Model):
     """Model which stores the information of the postings added by recruiter"""
 
+    __tablename__ = "recruiter_postings"
+    
     postingId = db.Column(db.Integer, primary_key=True)
-    recruiterId = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
+    recruiterId = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     jobTitle = db.Column(db.String(500), index=True, nullable=False)
     jobDescription = db.Column(db.String(1000), index=True, nullable=False)
     jobLink = db.Column(db.String(1000), index=True, nullable=False)
@@ -83,19 +95,57 @@ class Recruiter_Postings(db.Model):
     jobPayRate = db.Column(db.String(120), index=True, nullable=False)
     maxHoursAllowed = db.Column(db.Integer, nullable=False)
 
-class PostingApplications(db.Model):
-    """Model which stores the information of the all applications for each recruiter posting"""
+    # Relationships
+    recruiter = db.relationship("User", backref="recruiter_postings")
 
-    postingId = db.Column(db.Integer, primary_key=True)
+    def __repr__(self):
+        return f"<RecruiterPosting {self.postingId} - {self.jobTitle}>"
+
+
+class PostingApplications(db.Model):
+    """Model to store all applications for each recruiter posting"""
+
+    postingId = db.Column(db.Integer, db.ForeignKey("recruiter_postings.postingId"), primary_key=True)
     recruiterId = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
     applicantId = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
 
+    # Relationships
+    recruiter_posting = db.relationship("Recruiter_Postings", backref="applications")
+    recruiter = db.relationship("User", foreign_keys=[recruiterId], backref="recruiter_applications")
+    applicant = db.relationship("User", foreign_keys=[applicantId], backref="applicant_applications")
+
+    def __repr__(self):
+        return f"<PostingApplication {self.postingId}>"
+
+
 class JobExperience(db.Model):
-    """Model to store job experiences for users."""
+    """Model to store job experiences for users"""
+
     id = db.Column(db.Integer, primary_key=True)
     job_title = db.Column(db.String(120), nullable=False)
     company_name = db.Column(db.String(120), nullable=False)
     location = db.Column(db.String(120), nullable=False)
     duration = db.Column(db.String(50), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    username = db.Column(db.String(20), db.ForeignKey('user.username'), nullable=False)
+    username = db.Column(db.String(20), db.ForeignKey("user.username"), nullable=False)
+
+    def __repr__(self):
+        return f"<JobExperience {self.job_title} at {self.company_name}>"
+
+
+class Meetings(db.Model):
+    """Model to store meeting information"""
+
+    id = db.Column(db.Integer, primary_key=True)
+    recruiter_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    applicant_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    meeting_time = db.Column(db.DateTime, nullable=False)
+    posting_id = db.Column(db.Integer, db.ForeignKey("recruiter_postings.postingId"), nullable=True)
+
+    # Relationships
+    recruiter = db.relationship("User", foreign_keys=[recruiter_id], backref="recruiter_meetings")
+    applicant = db.relationship("User", foreign_keys=[applicant_id], backref="applicant_meetings")
+    job_posting = db.relationship("Recruiter_Postings", backref="meetings")
+
+    def __repr__(self):
+        return f"<Meeting {self.id} | Time: {self.meeting_time}>"

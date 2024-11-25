@@ -2,7 +2,7 @@ from flask import render_template, request, redirect, flash, url_for, abort, jso
 from flask_login import login_user, current_user, logout_user, login_required
 from app.services.job_fetcher import fetch_job_listings
 from app import app, db, bcrypt
-from app.models import Reviews, User, JobApplication, Recruiter_Postings, PostingApplications, JobExperience
+from app.models import Meetings, Reviews, User, JobApplication, Recruiter_Postings, PostingApplications, JobExperience
 
 from app.forms import RegistrationForm, LoginForm, ReviewForm, JobApplicationForm, PostingForm
 from datetime import datetime
@@ -495,3 +495,46 @@ def job_profile():
     # Fetch job experiences for the current user
     job_experiences = JobExperience.query.filter_by(username=current_user.username).all()
     return render_template('job_profile.html', job_experiences=job_experiences)
+
+@app.route('/schedule_meeting/<string:applicant_username>', methods=['POST'])
+@login_required
+def schedule_meeting(applicant_username):
+    meeting_time_str = request.form.get('meeting_time')  # Get the string from the form
+    try:
+        # Convert the string to a datetime object
+        meeting_time = datetime.strptime(meeting_time_str, "%Y-%m-%dT%H:%M")
+    except ValueError:
+        flash("Invalid date format. Please use the provided date-time picker.", "danger")
+        return redirect(request.referrer)
+
+    # Fetch the applicant from the database
+    applicant = User.query.filter_by(username=applicant_username).first()
+    if not applicant:
+        flash("Applicant not found.", "danger")
+        return redirect(request.referrer)
+
+    # Create and save the meeting
+    new_meeting = Meetings(
+        recruiter_id=current_user.id,
+        applicant_id=applicant.id,
+        meeting_time=meeting_time,
+        posting_id=None  # Add this if the meeting isn't linked to a job posting
+    )
+
+    db.session.add(new_meeting)
+    db.session.commit()
+
+    flash(f"Meeting scheduled with {applicant_username} on {meeting_time}.", "success")
+    return redirect(request.referrer)
+
+@app.route('/recruiter/meetings', methods=['GET'])
+@login_required
+def recruiter_meetings():
+    meetings = Meetings.query.filter_by(recruiter_id=current_user.id).all()
+    return render_template("recruiter_meetings.html", meetings=meetings)
+
+@app.route('/applicant/meetings', methods=['GET'])
+@login_required
+def applicant_meetings():
+    meetings = Meetings.query.filter_by(applicant_id=current_user.id).all()
+    return render_template("applicant_meetings.html", meetings=meetings)
