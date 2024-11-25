@@ -87,11 +87,20 @@ class Recruiter_Postings(db.Model):
 
 
 class PostingApplications(db.Model):
-    """Model which stores the information of the all applications for each recruiter posting"""
+    """Model which stores the information of all applications for each recruiter posting."""
 
-    postingId = db.Column(db.Integer, primary_key=True)
+    __tablename__ = "posting_applications"
+
+    postingId = db.Column(db.Integer, db.ForeignKey("recruiter_postings.postingId"), primary_key=True)
     recruiterId = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
     applicantId = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
+    shortlisted = db.Column(db.Boolean, default=False)  # Add shortlisted column
+
+    # Relationships
+    recruiter = db.relationship("User", foreign_keys=[recruiterId], backref="applications_reviewed")
+    applicant = db.relationship("User", foreign_keys=[applicantId], backref="applications_applied")
+    job_posting = db.relationship("Recruiter_Postings", foreign_keys=[postingId], backref="applications")
+
 
 class JobExperience(db.Model):
     """Model to store job experiences for users."""

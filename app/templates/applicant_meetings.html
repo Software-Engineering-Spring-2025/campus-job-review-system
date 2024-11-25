@@ -1,25 +1,37 @@
-<h2>Your Scheduled Meetings</h2>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Recruiter</th>
-            <th>Meeting Time</th>
-            <th>Related Job Posting</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for meeting in meetings %}
-        <tr>
-            <td>{{ meeting.recruiter.username }}</td>
-            <td>{{ meeting.meeting_time }}</td>
-            <td>
-                {% if meeting.job_posting %}
-                    {{ meeting.job_posting.jobTitle }}
-                {% else %}
-                    Not Linked
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mt-4">My Scheduled Meetings</h2>
+
+    <table class="table table-bordered table-hover mt-4">
+        <thead class="thead-light">
+            <tr>
+                <th>Recruiter</th>
+                <th>Meeting Time</th>
+                <th>Related Job Posting</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for meeting in meetings %}
+            <tr>
+                <td>{{ meeting.recruiter.username }}</td>
+                <td>{{ meeting.meeting_time }}</td>
+                <td>
+                    {% if meeting.job_posting %}
+                        {{ meeting.job_posting.jobTitle }}
+                    {% else %}
+                        Not Linked
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            {% if meetings|length == 0 %}
+            <tr>
+                <td colspan="3" class="text-center">No scheduled meetings found.</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

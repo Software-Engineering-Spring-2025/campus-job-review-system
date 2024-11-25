@@ -29,17 +29,29 @@
                     <td>
                         <!-- Form for viewing applicant profile -->
                         <form method="GET" action="{{ url_for('get_applicant', applicant_username=user.username) }}" style="display: inline;">
-                            <button type="submit" class="btn btn-blue">View Profile</button>
+                            <button type="submit" class="btn btn-info">View Profile</button>
                         </form>
                         
                         <!-- Form for scheduling a meeting -->
                         <form method="POST" action="{{ url_for('schedule_meeting', applicant_username=user.username) }}" style="display: inline;">
                             <input type="datetime-local" name="meeting_time" required style="margin-right: 10px;">
-                            <button type="submit" class="btn btn-orange">Schedule Meeting</button>
+                            <button type="submit" class="btn btn-primary">Schedule Meeting</button>
+                        </form>
+                        
+                        <!-- Form for shortlisting applicant -->
+                        <form method="POST" action="{{ url_for('shortlist_applicant', applicant_username=user.username) }}" style="display: inline;">
+                            <button type="submit" class="btn {% if user.shortlisted %}btn-success{% else %}btn-secondary{% endif %}">
+                                {% if user.shortlisted %}Unshortlist{% else %}Shortlist{% endif %}
+                            </button>
                         </form>
                     </td>
                 </tr>
                 {% endfor %}
+                {% if application_user_profiles|length == 0 %}
+                <tr>
+                    <td colspan="3" class="text-center">No applicants found for this job posting.</td>
+                </tr>
+                {% endif %}
             </tbody>
         </table>
     </div>

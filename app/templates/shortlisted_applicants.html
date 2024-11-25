@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mt-4">Shortlisted Applicants for {{ posting.jobTitle }}</h2>
+    <table class="table table-bordered table-hover mt-4">
+        <thead class="thead-light">
+            <tr>
+                <th>Applicant</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for applicant in applicants %}
+            <tr>
+                <td>{{ applicant.applicant.username }}</td>
+                <td>{{ applicant.applicant.email }}</td>
+                <td>
+                    <!-- Unshortlist Button -->
+                    <form method="POST" action="{{ url_for('shortlist_applicant', posting_id=applicant.postingId, applicant_id=applicant.applicantId) }}">
+                        <button type="submit" class="btn btn-danger">Unshortlist</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            {% if applicants|length == 0 %}
+            <tr>
+                <td colspan="3" class="text-center">No shortlisted applicants found.</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

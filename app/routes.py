@@ -511,6 +511,64 @@ def delete_job_application(application_id):
     flash("Job application deleted successfully!", "success")
     return redirect(url_for('application_tracker'))
 
+@app.route('/shortlisted/<int:posting_id>', methods=['GET'])
+@login_required
+def view_shortlisted_for_posting(posting_id):
+    """
+    Fetch and display all shortlisted applicants for a specific job posting.
+    """
+    # Ensure the current user is the recruiter for this posting
+    posting = Recruiter_Postings.query.filter_by(postingId=posting_id, recruiterId=current_user.id).first_or_404()
+
+    # Fetch all shortlisted applicants for the job posting
+    shortlisted_applicants = PostingApplications.query.filter_by(
+        postingId=posting_id,
+        recruiterId=current_user.id,
+        shortlisted=True
+    ).all()
+
+    return render_template("shortlisted_applicants.html", posting=posting, applicants=shortlisted_applicants)
+
+@app.route('/shortlisted', methods=['GET'])
+@login_required
+def view_all_shortlisted():
+    """
+    Fetch and display all shortlisted applicants for all job postings of the recruiter.
+    """
+    if not current_user.is_recruiter:
+        flash("Unauthorized access! Only recruiters can view this page.", "danger")
+        return redirect(url_for('home'))
+
+    # Fetch all job postings for the current recruiter
+    postings = Recruiter_Postings.query.filter_by(recruiterId=current_user.id).all()
+
+    # Fetch all shortlisted applicants
+    shortlisted_applicants = PostingApplications.query.filter_by(
+        recruiterId=current_user.id,
+        shortlisted=True
+    ).all()
+
+    return render_template("shortlisted_applicants.html", postings=postings, applicants=shortlisted_applicants)
+
+@app.route('/shortlisted', methods=['GET'])
+@login_required
+def view_shortlisted():
+    if not current_user.is_recruiter:
+        flash("Unauthorized access! Only recruiters can view this page.", "danger")
+        return redirect(url_for('home'))
+
+    # Fetch all job postings for the current recruiter
+    postings = Recruiter_Postings.query.filter_by(recruiterId=current_user.id).all()
+
+    # Fetch all shortlisted applicants
+    shortlisted_applicants = PostingApplications.query.filter_by(
+        recruiterId=current_user.id,
+        shortlisted=True
+    ).all()
+
+    return render_template("shortlisted_applicants.html", postings=postings, applicants=shortlisted_applicants)
+
+
 @app.route('/job_profile', methods=['GET', 'POST'])
 @login_required
 def job_profile():
