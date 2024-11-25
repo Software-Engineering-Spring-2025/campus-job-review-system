@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mt-4">Shortlisted Applicants</h2>
+
+    {% if shortlisted_by_posting %}
+        {% for posting, applicants in shortlisted_by_posting.items() %}
+        <div class="mt-5">
+            <h3>{{ posting.jobTitle }}</h3>
+            <p><strong>Location:</strong> {{ posting.jobLocation }}</p>
+            <p><strong>Description:</strong> {{ posting.jobDescription }}</p>
+
+            <table class="table table-bordered table-hover mt-3">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Applicant</th>
+                        <th>Email</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for applicant in applicants %}
+                    <tr>
+                        <td>{{ applicant.applicant.username }}</td>
+                        <td>{{ applicant.applicant.email }}</td>
+                        <td>
+                            <!-- Toggle Shortlist Button -->
+                            <form method="POST" action="{{ url_for('toggle_shortlist', posting_id=applicant.postingId, applicant_id=applicant.applicantId) }}">
+                                <button type="submit" class="btn btn-danger">
+                                    {{ "Unshortlist" if applicant.shortlisted else "Shortlist" }}
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% if applicants|length == 0 %}
+                    <tr>
+                        <td colspan="3" class="text-center">No shortlisted applicants for this job.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p class="text-center mt-4">No shortlisted applicants found.</p>
+    {% endif %}
+</div>
+{% endblock content %}
