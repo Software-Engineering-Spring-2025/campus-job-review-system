@@ -2,7 +2,7 @@ import os
 import sys
 import pytest
 from app import app, db
-from app.models import User, Reviews, JobApplication, JobExperience, Recruiter_Postings
+from app.models import User, Reviews, JobApplication, JobExperience, Recruiter_Postings, PostingApplications
 from datetime import datetime
 from unittest.mock import patch
 from flask import url_for 
@@ -570,6 +570,72 @@ def test_apply_for_job_already_applied(client, login_user):
     response = client.post(f'/apply/{posting.postingId}', data={'recruiter_id': login_user.id}, follow_redirects=True)
 
     assert response.status_code == 200
+
+# Test get applications request for recruiters
+def test_get_applications(client, login_user):    
+    posting = Recruiter_Postings(
+        postingId=1,
+        recruiterId=login_user.id,
+        jobTitle="Software Engineer",
+        jobLink="https://example.com/software-engineer",
+        jobDescription="Develop software applications.",
+        jobLocation="Remote",
+        jobPayRate=50,
+        maxHoursAllowed=40
+    )
+    db.session.add(posting)
+    db.session.commit()
+
+    # Create an application for this job by the applicant
+    application = PostingApplications(
+        postingId=posting.postingId,
+        recruiterId=login_user.id,
+        applicantId=login_user.id
+    )
+    db.session.add(application)
+    db.session.commit()
+
+    response = client.get(f'/recruiter/{posting.postingId}/applications')
+
+    assert response.status_code == 302
+
+
+# Test get applications request without applicants for recruiters
+def test_get_applications_no_applications(client, login_user):
+    posting = Recruiter_Postings(
+        postingId=1,
+        recruiterId=login_user.id,
+        jobTitle="Software Engineer",
+        jobLink="https://example.com/software-engineer",
+        jobDescription="Develop software applications.",
+        jobLocation="Remote",
+        jobPayRate=50,
+        maxHoursAllowed=40
+    )
+    db.session.add(posting)
+    db.session.commit()
+
+    response = client.get(f'/recruiter/{posting.postingId}/applications')
+
+    assert response.status_code == 302
+
+
+# Test get applicants for a recruiter posting
+def test_get_applicant_profile(client, login_user):    
+    job_experience = JobExperience(
+        username=login_user.username,
+        company_name="Example Corp",
+        job_title="Software Developer",
+        location="Raleigh",
+        duration="1 year",
+        description="Software Engineering"
+    )
+    db.session.add(job_experience)
+    db.session.commit()
+
+    response = client.get(f'/applicant_profile/{login_user.username}')
+
+    assert response.status_code == 302
 
 
 # Test review creation with invalid rating input
