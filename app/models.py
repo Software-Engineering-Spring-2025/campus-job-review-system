@@ -85,7 +85,6 @@ class Recruiter_Postings(db.Model):
     """Model which stores the information of the postings added by recruiter"""
 
     __tablename__ = "recruiter_postings"
-    
     postingId = db.Column(db.Integer, primary_key=True)
     recruiterId = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     jobTitle = db.Column(db.String(500), index=True, nullable=False)
@@ -103,19 +102,26 @@ class Recruiter_Postings(db.Model):
 
 
 class PostingApplications(db.Model):
-    """Model to store all applications for each recruiter posting"""
+    """Model which stores the information of all applications for each recruiter posting."""
 
-    postingId = db.Column(db.Integer, db.ForeignKey("recruiter_postings.postingId"), primary_key=True)
-    recruiterId = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
-    applicantId = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
+    __tablename__ = "posting_applications"
+
+    postingId = db.Column(db.Integer, db.ForeignKey("recruiter_postings.postingId"), primary_key=True)  # ForeignKey referencing Recruiter_Postings
+    recruiterId = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)  # ForeignKey referencing User (Recruiter)
+    applicantId = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)  # ForeignKey referencing User (Applicant)
+    shortlisted = db.Column(db.Boolean, default=False, nullable=False)  # Whether this applicant is shortlisted for this posting
 
     # Relationships
-    recruiter_posting = db.relationship("Recruiter_Postings", backref="applications")
-    recruiter = db.relationship("User", foreign_keys=[recruiterId], backref="recruiter_applications")
-    applicant = db.relationship("User", foreign_keys=[applicantId], backref="applicant_applications")
+    recruiter = db.relationship("User", foreign_keys=[recruiterId], backref="reviewed_applications")
+    applicant = db.relationship("User", foreign_keys=[applicantId], backref="applied_applications")
+    job_posting = db.relationship("Recruiter_Postings", foreign_keys=[postingId], backref="applications")
 
     def __repr__(self):
-        return f"<PostingApplication {self.postingId}>"
+        return (
+            f"<PostingApplication Posting ID: {self.postingId}, "
+            f"Recruiter ID: {self.recruiterId}, Applicant ID: {self.applicantId}, "
+            f"Shortlisted: {self.shortlisted}>"
+        )
 
 
 class JobExperience(db.Model):
