@@ -489,6 +489,7 @@ def job_profile():
         location = request.form.get('location')
         duration = request.form.get('duration')
         description = request.form.get('description')
+        skills = request.form.get('skills') 
 
         new_job = JobExperience(
             job_title=job_title,
@@ -496,6 +497,7 @@ def job_profile():
             location=location,
             duration=duration,
             description=description,
+            skills=skills,
             username=current_user.username
         )
         db.session.add(new_job)
