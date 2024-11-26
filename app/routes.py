@@ -633,3 +633,32 @@ def toggle_shortlist(posting_id, applicant_id):
 
     # Redirect back to the referring page
     return redirect(request.referrer)
+
+@app.route('/search_candidates', methods=['GET', 'POST'])
+@login_required
+def search_candidates():
+    if not current_user.is_recruiter:
+        flash("Unauthorized access! Only recruiters can access this page.", "danger")
+        return redirect(url_for('home'))
+
+    job_experiences = []
+    if request.method == 'POST':
+        # Get search type (role or skills) and search query
+        search_type = request.form.get('search_type')
+        search_query = request.form.get('search_query', '').strip()
+
+        # Base query: Fetch job experiences with related user information
+        query = db.session.query(JobExperience, User).join(User).filter(User.is_recruiter == False)
+
+        # Apply filters based on the search type
+        if search_query:
+            if search_type == 'role':
+                query = query.filter(JobExperience.job_title.ilike(f"%{search_query}%"))
+            elif search_type == 'skills':
+                query = query.filter(JobExperience.skills.ilike(f"%{search_query}%"))
+
+        # Execute query
+        job_experiences = query.all()
+
+    return render_template('search_candidates.html', job_experiences=job_experiences)
+

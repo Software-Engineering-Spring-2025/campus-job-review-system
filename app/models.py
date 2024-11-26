@@ -128,15 +128,16 @@ class JobExperience(db.Model):
     """Model to store job experiences for users"""
 
     id = db.Column(db.Integer, primary_key=True)
-    job_title = db.Column(db.String(120), nullable=False)
-    company_name = db.Column(db.String(120), nullable=False)
-    location = db.Column(db.String(120), nullable=False)
-    duration = db.Column(db.String(50), nullable=False)
-    description = db.Column(db.Text, nullable=False)
-    username = db.Column(db.String(20), db.ForeignKey("user.username"), nullable=False)
+    job_title = db.Column(db.String(120), nullable=False)  # Job title for this experience
+    company_name = db.Column(db.String(120), nullable=False)  # Company name
+    location = db.Column(db.String(120), nullable=False)  # Location of the job
+    duration = db.Column(db.String(50), nullable=False)  # Duration of the job
+    description = db.Column(db.Text, nullable=False)  # Description of the job responsibilities
+    skills = db.Column(db.Text, nullable=True)  # Skills used or gained in this job
+    username = db.Column(db.String(20), db.ForeignKey("user.username"), nullable=False)  # User who added this experience
 
     def __repr__(self):
-        return f"<JobExperience {self.job_title} at {self.company_name}>"
+        return f"<JobExperience {self.job_title} at {self.company_name} | Skills: {self.skills}>"
 
 
 class Meetings(db.Model):
