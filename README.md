@@ -136,7 +136,7 @@ We’re excited about the enhancements coming to the NCSU Campus Jobs Review Sys
 - **Skill Assessment Tests:** Introduce integrated assessments to help candidates showcase their abilities to recruiters directly through the platform.
 - **Peer Networking:** Add a networking feature where students can connect, share advice, and collaborate on career development.
 - **Review Validation System:** Implement a system to verify and validate job reviews, ensuring authenticity and reliability for users.
-- **AI-Powered Job Recommendations: **Implement AI to suggest relevant job opportunities to candidates based on their profile, skills, and application history.
+- **AI-Powered Job Recommendations:** Implement AI to suggest relevant job opportunities to candidates based on their profile, skills, and application history.
 
 
 ## 🙌 Contributors
