@@ -5,6 +5,22 @@
     <p><strong>Location:</strong> {{ posting.jobLocation }}</p>
     <p><strong>Description:</strong> {{ posting.jobDescription }}</p>
 
+    <style>
+        /* Styling for table text */
+        table th, table td {
+            color: white;
+            background-color: #343a40; /* Dark background for contrast */
+        }
+
+        table th {
+            font-weight: bold;
+        }
+
+        table {
+            border: 1px solid white; /* Optional for better visibility */
+        }
+    </style>
+
     {% if application_user_profiles %}
     <table class="table table-bordered mt-4">
         <thead>
@@ -20,55 +36,31 @@
                 <td>{{ applicant.username }}</td>
                 <td>{{ applicant.email }}</td>
                 <td>
-
-<section>
-    <div class="container">
-        <h2>Applicants for:</h2>
-        <h5>Job Posting ID: {{ posting.postingId }}</h5>
-        <h5>Job Title: {{ posting.jobTitle }}</h5>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Applicant</th>
-                    <th>Applicant Username</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for user in application_user_profiles %}
-                <tr>
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>
-                        <!-- Form for viewing applicant profile -->
-                        <form method="GET" action="{{ url_for('get_applicant', applicant_username=user.username) }}" style="display: inline;">
-                            <button type="submit" class="btn btn-info">View Profile</button>
-                        </form>
-                        
-                        <!-- Form for scheduling a meeting -->
-                        <form method="POST" action="{{ url_for('schedule_meeting', applicant_username=user.username) }}" style="display: inline;">
-                            <input type="datetime-local" name="meeting_time" required style="margin-right: 10px;">
-                            <input type="hidden" name="posting_id" value="{{ posting.postingId }}">
-                            <button type="submit" class="btn btn-primary">Schedule Meeting</button>
-                        </form>
-                        
-                        <form method="POST" action="{{ url_for('toggle_shortlist', posting_id=posting.postingId, applicant_id=applicant.id) }}">
-                            <button type="submit" class="btn btn-danger">
-                                Toggle Shortlist
-                            </button>
-                        </form>
-                        
-                    </td>
-                </tr>
-                {% endfor %}
-                {% if application_user_profiles|length == 0 %}
-                <tr>
-                    <td colspan="3" class="text-center">No applicants found for this job posting.</td>
-                </tr>
-                {% endif %}
-            </tbody>
-        </table>
-    </div>
-</section>
-
+                    <!-- Form for viewing applicant profile -->
+                    <form method="GET" action="{{ url_for('get_applicant', applicant_username=applicant.username) }}" style="display: inline;">
+                        <button type="submit" class="btn btn-info">View Profile</button>
+                    </form>
+                    
+                    <!-- Form for scheduling a meeting -->
+                    <form method="POST" action="{{ url_for('schedule_meeting', applicant_username=applicant.username) }}" style="display: inline;">
+                        <input type="datetime-local" name="meeting_time" required style="margin-right: 10px;">
+                        <input type="hidden" name="posting_id" value="{{ posting.postingId }}">
+                        <button type="submit" class="btn btn-primary">Schedule Meeting</button>
+                    </form>
+                    
+                    <!-- Form for toggling shortlist -->
+                    <form method="POST" action="{{ url_for('toggle_shortlist', posting_id=posting.postingId, applicant_id=applicant.id) }}">
+                        <button type="submit" class="btn btn-danger">
+                            Toggle Shortlist
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="mt-4 text-center">No applicants found for this job posting.</p>
+    {% endif %}
+</div>
 {% endblock content %}
