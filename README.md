@@ -1,14 +1,14 @@
 # 🌟 NC State University Campus Jobs Review System 🌟
 
 
-[![DOI](https://zenodo.org/badge/865464151.svg)](https://doi.org/10.5281/zenodo.14015306)
-[![License](https://img.shields.io/github/license/SE-Group-95/campus-job-review-system)](https://github.com/SE-Group-95/campus-job-review-system/blob/main/LICENSE)
-[![GitHub Release](https://img.shields.io/github/release/SE-Group-95/campus-job-review-system.svg)](https://github.com/SE-Group-95/campus-job-review-system/releases)
-[![codecov.io](https://codecov.io/github/SE-Group-95/campus-job-review-system/coverage.svg?branch=master)](https://codecov.io/github/SE-Group-95/campus-job-review-system?branch=main)
-[![Build main](https://github.com/SE-Group-95/campus-job-review-system/actions/workflows/check-commits.yml/badge.svg)](https://github.com/SE-Group-95/campus-job-review-system/actions/workflows/check-commits.yml)
-[![Open Issues](https://img.shields.io/github/issues/SE-Group-95/campus-job-review-system)](https://github.com/SE-Group-95/campus-job-review-system/issues)
-[![Closed Issues](https://img.shields.io/github/issues-closed/SE-Group-95/campus-job-review-system?color=brightgreen)](https://github.com/SE-Group-95/campus-job-review-system/issues?q=is%3Aissue+is%3Aclosed)
-[![Pull Requests](https://img.shields.io/github/issues-pr/SE-Group-95/campus-job-review-system)](https://github.com/SE-Group-95/campus-job-review-system/pulls)
+[![DOI](https://zenodo.org/badge/887986629.svg)](https://doi.org/10.5281/zenodo.14219785)
+[![License](https://img.shields.io/github/license/SEFall24-Team61/campus-job-review-system)](https://github.com/SEFall24-Team61/campus-job-review-system/blob/main/LICENSE)
+[![GitHub Release](https://img.shields.io/github/release/SEFall24-Team61/campus-job-review-system.svg)](https://github.com/SEFall24-Team61/campus-job-review-system/releases)
+[![codecov.io](https://codecov.io/github/SEFall24-Team61/campus-job-review-system/coverage.svg?branch=master)](https://codecov.io/github/SEFall24-Team61/campus-job-review-system?branch=main)
+[![Build main](https://github.com/SEFall24-Team61/campus-job-review-system/actions/workflows/check-commits.yml/badge.svg)](https://github.com/SEFall24-Team61/campus-job-review-system/actions/workflows/check-commits.yml)
+[![Open Issues](https://img.shields.io/github/issues/SEFall24-Team61/campus-job-review-system)](https://github.com/SEFall24-Team61/campus-job-review-system/issues)
+[![Closed Issues](https://img.shields.io/github/issues-closed/SEFall24-Team61/campus-job-review-system?color=brightgreen)](https://github.com/SEFall24-Team61/campus-job-review-system/issues?q=is%3Aissue+is%3Aclosed)
+[![Pull Requests](https://img.shields.io/github/issues-pr/SEFall24-Team61/campus-job-review-system)](https://github.com/SEFall24-Team61/campus-job-review-system/pulls)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![linting: flake8](https://img.shields.io/badge/linting-flake8-yellowgreen)](https://flake8.pycqa.org/en/latest/)
 
@@ -100,7 +100,7 @@ To set up the project locally, follow these steps.
 
 **Clone the Repository:**
 ```bash
-git clone https://github.com/SE-Group-95/campus-job-review-system.git
+git https://github.com/SEFall24-Team61/campus-job-review-system.git
 cd campus-job-review-system
 ```
 Choose Your Installation Method (with Docker or without Docker). Detailed instructions are available in [INSTALL.md](INSTALL.md).
@@ -129,7 +129,7 @@ The rules listed below are to be followed by the ones who will be contributing t
   
 
 ## 📈 Code Coverage
-[![codecov.io](https://codecov.io/github/SE-Group-95/campus-job-review-system/coverage.svg?branch=master)](https://codecov.io/github/SE-Group-95/campus-job-review-system?branch=main) It is part of the [Github Workflow Build](https://github.com/SE-Group-95/campus-job-review-system/actions/workflows/code_coverage.yml)
+[![codecov.io](https://codecov.io/github/SEFall24-Team61/campus-job-review-system/coverage.svg?branch=master)](https://codecov.io/github/SE-Group-95/campus-job-review-system?branch=main) It is part of the [Github Workflow Build](https://github.com/SEFall24-Team61/campus-job-review-system/actions/workflows/code_coverage.yml)
 
 
 ## 🌐 Future Scope
