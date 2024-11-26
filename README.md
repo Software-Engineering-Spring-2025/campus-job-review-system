@@ -18,17 +18,26 @@
 
 Are you a student at NC State looking for the perfect campus job? Look no further! Our **Campus Job Review System** is here to help you make informed decisions about job opportunities on campus. With reviews from fellow students, you can gain insights into what it's really like to work in different roles.
 
-[![Watch the video](https://img.youtube.com/vi/0n-MzIKCS4w/maxresdefault.jpg)](https://youtu.be/0n-MzIKCS4w)
+
+https://github.com/user-attachments/assets/45940413-30e4-48dd-bbea-70af6b97abf9
+
+
 
 ---
 
 ## 💡 Why This Project?
 
-Finding a job on campus can be overwhelming. Students often rely on word-of-mouth recommendations or limited information. This project aims to bridge that gap by providing a platform where students can:
+Finding a job on campus can be overwhelming. Students often rely on word-of-mouth recommendations or limited information. This project aims to bridge that gap by providing a platform with useful features like:
 
 - **Access Real Reviews**: Get honest feedback from peers about their job experiences.
 - **Make Informed Decisions**: Choose roles that align with their skills and preferences.
 - **Support Fellow Students**: Contribute to the community by sharing their own experiences.
+- **Job Application Tracker:** Add job links, application dates, and current statuses to track all your applications in one place and stay organized during your job search.
+- **Recruiter Login:** Recruiters have a separate login to manage job postings, including adding, viewing, and deleting listings, ensuring a smooth hiring process.
+- **Candidate Job Applications:** Candidates can view available job postings and apply directly through the platform, while recruiters can access a dedicated section to review applicants.
+- **Job Experience Sharing:** Candidates can add details about their job experiences, helping peers make informed decisions with real-world insights.
+- **Interview Scheduling:** Recruiters can schedule interviews with candidates directly through the platform, providing updates that candidates can view and manage.
+
 
 By fostering transparency and collaboration, our platform empowers students to navigate the campus job market confidently.
 
@@ -45,6 +54,10 @@ By fostering transparency and collaboration, our platform empowers students to n
 2. **Read Feedback**: He reads honest and detailed feedback from current and former student employees, giving him insights into the work culture and expected responsibilities.
 
 3. **Make a Decision**: Armed with this information, Alex feels more confident applying for the job, knowing what to expect and how to best prepare for the interview.
+
+4. **Apply for Jobs:** Students can directly apply to jobs posted by recruiters can showcase their experiences directly to recruiters.
+
+5. **Track Job Applications:** Students can track their applications and update the status accordingly.
 
 This is just one example of how our system can help students like Alex navigate their campus job search effectively!
 
@@ -76,7 +89,6 @@ This is just one example of how our system can help students like Alex navigate 
 - [Project Poster](#-project-poster)
 - [Contribution Guidelines](#-contribution-guidelines)
 - [Code Coverage](#-code-coverage)
-- [Chat Channel](#-chat-channel)
 - [Future Scope](#-future-scope)
 - [Contributors](#-contributors)
 - [Acknowledgements](#-acknowledgements)
@@ -120,31 +132,24 @@ The rules listed below are to be followed by the ones who will be contributing t
 [![codecov.io](https://codecov.io/github/SE-Group-95/campus-job-review-system/coverage.svg?branch=master)](https://codecov.io/github/SE-Group-95/campus-job-review-system?branch=main) It is part of the [Github Workflow Build](https://github.com/SE-Group-95/campus-job-review-system/actions/workflows/code_coverage.yml)
 
 
-## 💬 Chat Channel
-![Chat.png](Data%2FChat.png)
-
-
 ## 🌐 Future Scope
 We’re excited about the enhancements coming to the NCSU Campus Jobs Review System! Here’s what’s on the horizon:
-- Interactive Voting System: We’ll introduce upvote and downvote functionality for more engaging and reliable feedback on reviews.
-
-- Extended Job Portals: Currently limited to one job portal, we plan to aggregate reviews from multiple sources to broaden job opportunities for students.
-
-- Enhanced User Interface: Expect a cleaner, more dynamic UI for a smoother, more enjoyable user experience.
-
-- Personalized Job Recommendations: A tailored recommendation system suggests jobs based on user profiles and past reviews, enhancing relevance and discovery.
+- **Skill Assessment Tests:** Introduce integrated assessments to help candidates showcase their abilities to recruiters directly through the platform.
+- **Peer Networking:** Add a networking feature where students can connect, share advice, and collaborate on career development.
+- **Review Validation System:** Implement a system to verify and validate job reviews, ensuring authenticity and reliability for users.
+- **AI-Powered Job Recommendations: **Implement AI to suggest relevant job opportunities to candidates based on their profile, skills, and application history.
 
 
 ## 🙌 Contributors
 A heartfelt thank you to our contributors who made this project possible:
 
-- [Mayur Gotmare](https://github.com/MayurG26)
-- [Sidharrth Gandhi](https://github.com/22SiD)
-- [Prachi Navale](https://github.com/prachinav)
+- [Shruti Dhond](https://github.com/shrutid02)
+- [Pranav Manbhekar](https://github.com/pranavman11)
+- [Shardul Khare](https://github.com/LuDraa)
 
 
 ## 🙏 Acknowledgements
-We would like to thank Professor Dr Timothy Menzies for helping us understand the process of building a good Software Engineering project. We would also like to thank the teaching assistants for their support throughout the project.
+We would like to thank Professor Dr. Timothy Menzies for helping us understand the process of building a good Software Engineering project. We would also like to thank the teaching assistants for their support throughout the project.
 
 
 ## 💡 Feedback
@@ -152,7 +157,7 @@ We love hearing from you! Please open an issue or submit a pull request if you h
 
 
 ## 🙏 Special Thanks to Previous Contributors
-We extend our gratitude to the [previous contributors](https://github.com/akshat22/campus-job-review-system) who helped lay the foundation for this project. Their contributions have been instrumental in making the NCSU Campus Job Review System what it is today!
+We extend our gratitude to the [previous contributors](https://github.com/SE-Group-95/campus-job-review-system) who helped lay the foundation for this project. Their contributions have been instrumental in making the NCSU Campus Job Review System what it is today!
 
 
 ## ⚠️ Disclaimer
