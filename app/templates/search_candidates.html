@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Inline CSS for Table Styling -->
+<style>
+    table th, table td {
+        color: white !important;
+    }
+    table {
+        background-color: black !important;
+    }
+    thead th {
+        background-color: #333;
+        color: white;
+    }
+    tbody tr:hover {
+        background-color: #444;
+    }
+    .search-form {
+        background-color: #222;
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+    .search-form label {
+        color: white;
+    }
+</style>
+
+<div class="container">
+    <h2 class="mt-4">Search Candidates</h2>
+
+    <!-- Search Form -->
+    <div class="search-form">
+        <form method="POST" action="/search_candidates">
+            <div class="form-group">
+                <label for="search_type">Search By</label>
+                <select name="search_type" class="form-control" required>
+                    <option value="role">Role</option>
+                    <option value="skills">Skills</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="search_query">Search Query</label>
+                <input type="text" name="search_query" class="form-control" placeholder="e.g., Manager, Python" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+
+    <!-- Search Results -->
+    <table class="table table-bordered table-hover mt-4">
+        <thead>
+            <tr>
+                <th>Candidate Name</th>
+                <th>Email</th>
+                <th>Job Title</th>
+                <th>Skills</th>
+                <th>Duration</th>
+                <th>Company Name</th>
+                <th>Location</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for experience, user in job_experiences %}
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ experience.job_title }}</td>
+                <td>{{ experience.skills or "Not Provided" }}</td>
+                <td>{{ experience.duration }}</td>
+                <td>{{ experience.company_name }}</td>
+                <td>{{ experience.location }}</td>
+            </tr>
+            {% endfor %}
+            {% if job_experiences|length == 0 %}
+            <tr>
+                <td colspan="7" class="text-center">No candidates found matching your criteria.</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content %}
