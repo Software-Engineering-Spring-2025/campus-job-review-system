@@ -116,7 +116,7 @@ Check out our demo video to see the application in action! Click the link below 
 https://drive.google.com/file/d/1oAObuweDIOl6X-vy0h5HK-CFmyReeOJx/view?usp=sharing
 
 ## 📊 Project Poster
-Curious about our project? View our project poster showcasing key aspects of the system [here](https://www.canva.com/design/DAGVKp8r6wY/V9NS6fGyN8Egj4PHvPCEaQ/view?utm_content=DAGVKp8r6wY&utm_campaign=designshare&utm_medium=link&utm_source=editor).
+Curious about our project? View our project poster showcasing key aspects of the system [here](https://github.com/SEFall24-Team61/campus-job-review-system/blob/main/app/static/Project3-Team61-poster.png).
 
 
 ## 🤝 Contribution Guidelines
