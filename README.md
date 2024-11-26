@@ -100,7 +100,7 @@ To set up the project locally, follow these steps.
 
 **Clone the Repository:**
 ```bash
-git clone https://github.com/SE-Group-95/campus-job-review-system.git
+git https://github.com/SEFall24-Team61/campus-job-review-system.git
 cd campus-job-review-system
 ```
 Choose Your Installation Method (with Docker or without Docker). Detailed instructions are available in [INSTALL.md](INSTALL.md).
@@ -129,7 +129,7 @@ The rules listed below are to be followed by the ones who will be contributing t
   
 
 ## 📈 Code Coverage
-[![codecov.io](https://codecov.io/github/SE-Group-95/campus-job-review-system/coverage.svg?branch=master)](https://codecov.io/github/SE-Group-95/campus-job-review-system?branch=main) It is part of the [Github Workflow Build](https://github.com/SE-Group-95/campus-job-review-system/actions/workflows/code_coverage.yml)
+[![codecov.io](https://codecov.io/github/SEFall24-Team61/campus-job-review-system/coverage.svg?branch=master)](https://codecov.io/github/SE-Group-95/campus-job-review-system?branch=main) It is part of the [Github Workflow Build](https://github.com/SEFall24-Team61/campus-job-review-system/actions/workflows/code_coverage.yml)
 
 
 ## 🌐 Future Scope
