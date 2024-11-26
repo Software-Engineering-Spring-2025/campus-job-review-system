@@ -625,10 +625,11 @@ def toggle_shortlist(posting_id, applicant_id):
     application.shortlisted = not application.shortlisted
     db.session.commit()
 
+    # Add a flash message for feedback
     flash(
         f"Applicant {'shortlisted' if application.shortlisted else 'unshortlisted'} successfully!",
         "success"
     )
-    return redirect(url_for('view_shortlisted_for_posting', posting_id=posting_id))
 
-
+    # Redirect back to the referring page
+    return redirect(request.referrer)
