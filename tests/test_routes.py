@@ -2,7 +2,7 @@ import os
 import sys
 import pytest
 from app import app, db
-from app.models import User, Reviews, JobApplication, JobExperience, Recruiter_Postings, PostingApplications
+from app.models import Meetings, User, Reviews, JobApplication, JobExperience, Recruiter_Postings, PostingApplications
 from datetime import datetime
 from unittest.mock import patch
 from flask import url_for 
@@ -738,7 +738,160 @@ def test_job_profile_get(client, login_user, test_job_experiences):
         company_name="TechCorp",
         username=login_user.username
     ).first()
+
     assert experience is not None
     assert experience.location == "Remote"
     assert experience.duration == "2 years"
     assert experience.description == "Worked on web applications."
+
+def test_schedule_meeting_valid(client, login_user, test_job_experiences):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+    response = client.post(
+        f'/schedule_meeting/{login_user.username}',
+        data={
+            'meeting_time': '2024-12-01T10:00',
+            'posting_id': test_job_experiences[0].id
+        },
+        follow_redirects=True
+    )
+    assert response.status_code == 200
+
+
+def test_schedule_meeting_invalid_date_format(client, login_user):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+    response = client.post(
+        f'/schedule_meeting/{login_user.username}',
+        data={
+            'meeting_time': 'invalid-date',
+            'posting_id': 1
+        },
+        follow_redirects=True
+    )
+    assert response.status_code == 200  # Redirected due to flash message
+
+
+def test_schedule_meeting_no_posting_id(client, login_user):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+    response = client.post(
+        f'/schedule_meeting/{login_user.username}',
+        data={
+            'meeting_time': '2024-12-01T10:00'
+        },
+        follow_redirects=True
+    )
+    assert response.status_code == 200  # Redirected due to flash message
+
+
+def test_schedule_meeting_invalid_applicant(client, login_user):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+    response = client.post(
+        '/schedule_meeting/invalid_user',
+        data={
+            'meeting_time': '2024-12-01T10:00',
+            'posting_id': 1
+        },
+        follow_redirects=True
+    )
+    assert response.status_code == 200  # Redirected due to flash message
+
+
+def test_recruiter_meetings(client, login_user):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+        session['is_recruiter'] = True  # Ensure recruiter access
+
+    response = client.get('/recruiter/meetings', follow_redirects=True)
+    assert response.status_code == 200
+
+
+def test_applicant_meetings(client, login_user):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+    response = client.get('/applicant/meetings', follow_redirects=True)
+    assert response.status_code == 200
+
+
+def test_view_shortlisted_for_posting_valid(client, login_user, test_job_experiences):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+        session['is_recruiter'] = True
+
+    response = client.get(f'/shortlisted/{test_job_experiences[0].id}', follow_redirects=True)
+    assert response.status_code == 200
+
+
+def test_view_all_shortlisted_valid(client, login_user):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+        session['is_recruiter'] = True
+
+    response = client.get('/shortlisted', follow_redirects=True)
+    assert response.status_code == 200
+
+def test_view_all_shortlisted_valid(client, login_user):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+        session['is_recruiter'] = True
+
+    response = client.get('/shortlisted', follow_redirects=True)
+    assert response.status_code == 200
+
+def test_toggle_shortlist_valid(client, login_user, test_job_experiences):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+    # Assuming applicant ID is valid
+    response = client.post(f'/shortlist/{test_job_experiences[0].id}/{login_user.id}')
+    assert response.status_code == 302  # Redirect after success
+
+def test_search_candidates_role_valid(client, login_user):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+        session['is_recruiter'] = True
+
+    response = client.post(
+        '/search_candidates',
+        data={
+            'search_type': 'role',
+            'search_query': 'Software Engineer'
+        },
+        follow_redirects=True
+    )
+    assert response.status_code == 200
+
+
+def test_search_candidates_skills_valid(client, login_user):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+        session['is_recruiter'] = True
+
+    response = client.post(
+        '/search_candidates',
+        data={
+            'search_type': 'skills',
+            'search_query': 'Python'
+        },
+        follow_redirects=True
+    )
+    assert response.status_code == 200
+
+
+def test_search_candidates_unauthorized(client, login_user):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+        session['is_recruiter'] = False  # Simulate a non-recruiter user
+
+    response = client.get('/search_candidates', follow_redirects=True)
+    assert response.status_code == 200  # Redirected with unauthorized message
+
+
+
