@@ -9,6 +9,8 @@
 [![Open Issues](https://img.shields.io/github/issues/SEFall24-Team61/campus-job-review-system)](https://github.com/SEFall24-Team61/campus-job-review-system/issues)
 [![Closed Issues](https://img.shields.io/github/issues-closed/SEFall24-Team61/campus-job-review-system?color=brightgreen)](https://github.com/SEFall24-Team61/campus-job-review-system/issues?q=is%3Aissue+is%3Aclosed)
 [![Pull Requests](https://img.shields.io/github/issues-pr/SEFall24-Team61/campus-job-review-system)](https://github.com/SEFall24-Team61/campus-job-review-system/pulls)
+![GitHub last commit (branch)](https://img.shields.io/github/last-commit/SEFall24-Team61/campus-job-review-system/main)
+![GitHub code size in bytes](https://img.shields.io/github/repo-size/SEFall24-Team61/campus-job-review-system)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![linting: flake8](https://img.shields.io/badge/linting-flake8-yellowgreen)](https://flake8.pycqa.org/en/latest/)
 
@@ -106,18 +108,13 @@ cd campus-job-review-system
 Choose Your Installation Method (with Docker or without Docker). Detailed instructions are available in [INSTALL.md](INSTALL.md).
 
 
-## 📄 API Documentation
-Explore the API documentation for comprehensive details on available endpoints, request/response formats, and example usage [here](https://se-group-95.github.io/campus-job-review-system/app.html).
-
-
 ## 🎥 Demo Video
 Check out our demo video to see the application in action! Click the link below to watch:
 
-[![Watch the video](https://img.youtube.com/vi/wi0A6qIHnHk/maxresdefault.jpg)](https://youtu.be/wi0A6qIHnHk)
-
+https://drive.google.com/file/d/1oAObuweDIOl6X-vy0h5HK-CFmyReeOJx/view?usp=sharing
 
 ## 📊 Project Poster
-Curious about our project? View our project poster showcasing key aspects of the system [here](https://www.canva.com/design/DAGVKp8r6wY/V9NS6fGyN8Egj4PHvPCEaQ/view?utm_content=DAGVKp8r6wY&utm_campaign=designshare&utm_medium=link&utm_source=editor).
+Curious about our project? View our project poster showcasing key aspects of the system [here](https://github.com/SEFall24-Team61/campus-job-review-system/blob/main/app/static/Project3-Team61-poster.png).
 
 
 ## 🤝 Contribution Guidelines
@@ -126,10 +123,6 @@ The rules listed below are to be followed by the ones who will be contributing t
   - Atleast one review/approval is required from any other contributors of the project to merge a commit to the main branch.
   - It is recommended to delete the branch as soon as it is merged to the main branch to avoid stale branches in the repository.
   - It is encouraged to add name tags such as "feature/" or "patch/" in the branches if it is used to add code-patches or features in the project.
-  
-
-## 📈 Code Coverage
-[![codecov.io](https://codecov.io/github/SEFall24-Team61/campus-job-review-system/coverage.svg?branch=master)](https://codecov.io/github/SE-Group-95/campus-job-review-system?branch=main) It is part of the [Github Workflow Build](https://github.com/SEFall24-Team61/campus-job-review-system/actions/workflows/code_coverage.yml)
 
 
 ## 🌐 Future Scope
@@ -137,7 +130,7 @@ We’re excited about the enhancements coming to the NCSU Campus Jobs Review Sys
 - **Skill Assessment Tests:** Introduce integrated assessments to help candidates showcase their abilities to recruiters directly through the platform.
 - **Peer Networking:** Add a networking feature where students can connect, share advice, and collaborate on career development.
 - **Review Validation System:** Implement a system to verify and validate job reviews, ensuring authenticity and reliability for users.
-- **AI-Powered Job Recommendations: **Implement AI to suggest relevant job opportunities to candidates based on their profile, skills, and application history.
+- **AI-Powered Job Recommendations:** Implement AI to suggest relevant job opportunities to candidates based on their profile, skills, and application history.
 
 
 ## 🙌 Contributors
