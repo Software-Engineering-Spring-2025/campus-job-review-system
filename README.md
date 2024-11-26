@@ -106,10 +106,6 @@ cd campus-job-review-system
 Choose Your Installation Method (with Docker or without Docker). Detailed instructions are available in [INSTALL.md](INSTALL.md).
 
 
-## 📄 API Documentation
-Explore the API documentation for comprehensive details on available endpoints, request/response formats, and example usage [here](https://se-group-95.github.io/campus-job-review-system/app.html).
-
-
 ## 🎥 Demo Video
 Check out our demo video to see the application in action! Click the link below to watch:
 
