@@ -106,6 +106,7 @@ Follow the steps below to set up the Campus Job Review System. You can choose to
     - On Mac OS/Linux:
       ```bash
       source venv/bin/activate
+
       ```
 5. **Install Dependencies:**
    ```bash

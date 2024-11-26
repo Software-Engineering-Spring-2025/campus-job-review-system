@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Inline CSS for Table Styling -->
+<style>
+    /* Ensures all text inside the table is white */
+    table th, table td {
+        color: white !important;
+    }
+
+    /* Makes the table background black for contrast */
+    table {
+        background-color: black !important;
+    }
+
+    /* Optional: Style table headers for better visibility */
+    thead th {
+        background-color: #333;
+        color: white;
+    }
+
+    /* Optional: Add hover effect for rows */
+    tbody tr:hover {
+        background-color: #444;
+    }
+</style>
+
+<div class="container">
+    <h2 class="mt-4">Your Scheduled Meetings</h2>
+
+    <table class="table table-bordered table-hover mt-4">
+        <thead>
+            <tr>
+                <th>Applicant</th>
+                <th>Meeting Time</th>
+                <th>Related Job Posting</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for meeting in meetings %}
+            <tr>
+                <td>{{ meeting.applicant.username }}</td>
+                <td>{{ meeting.meeting_time }}</td>
+                <td>
+                    {% if meeting.job_posting %}
+                        {{ meeting.job_posting.jobTitle }}
+                    {% else %}
+                        Not Linked
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            {% if meetings|length == 0 %}
+            <tr>
+                <td colspan="3" class="text-center">No scheduled meetings found.</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content %}

@@ -2,7 +2,7 @@ from flask import render_template, request, redirect, flash, url_for, abort, jso
 from flask_login import login_user, current_user, logout_user, login_required
 from app.services.job_fetcher import fetch_job_listings
 from app import app, db, bcrypt
-from app.models import Reviews, User, JobApplication, Recruiter_Postings, PostingApplications, JobExperience
+from app.models import Meetings, Reviews, User, JobApplication, Recruiter_Postings, PostingApplications, JobExperience
 
 from app.forms import RegistrationForm, LoginForm, ReviewForm, JobApplicationForm, PostingForm
 from datetime import datetime
@@ -284,21 +284,32 @@ def delete_posting(posting_id):
     
     return redirect(url_for('recruiter_postings'))
 
-
 @app.route("/recruiter/<int:posting_id>/applications", methods=["GET"])
 @login_required
 def get_applications(posting_id):
-    posting = Recruiter_Postings.query.filter_by(postingId=posting_id).first()
-    applications = PostingApplications.query.filter_by(postingId=posting_id, recruiterId=current_user.id).all()
+    """
+    Display all applications for a specific job posting by the recruiter.
+    """
+    # Ensure the recruiter owns the posting
+    posting = Recruiter_Postings.query.filter_by(
+        postingId=posting_id, recruiterId=current_user.id
+    ).first_or_404()
 
+    # Fetch all applications for this posting
+    applications = PostingApplications.query.filter_by(postingId=posting_id).all()
+
+    # Create a list of user profiles associated with the applications
     application_user_profiles = []
     for application in applications:
-        application_user_profiles.append(User.query.filter_by(id=application.applicantId).first())
+        applicant = User.query.filter_by(id=application.applicantId).first()
+        if applicant:
+            application_user_profiles.append(applicant)
 
+    # Pass the posting and the applicants to the template
     return render_template(
         "posting_applicants.html",
         posting=posting,
-        application_user_profiles=application_user_profiles
+        application_user_profiles=application_user_profiles,
     )
 
 @app.route("/applicant_profile/<string:applicant_username>", methods=["GET"])
@@ -495,3 +506,130 @@ def job_profile():
     # Fetch job experiences for the current user
     job_experiences = JobExperience.query.filter_by(username=current_user.username).all()
     return render_template('job_profile.html', job_experiences=job_experiences)
+
+@app.route('/schedule_meeting/<string:applicant_username>', methods=['POST'])
+@login_required
+def schedule_meeting(applicant_username):
+    meeting_time_str = request.form.get('meeting_time')  # Get the meeting time
+    posting_id = request.form.get('posting_id')  # Get the posting ID
+
+    try:
+        # Convert the meeting time string to a datetime object
+        meeting_time = datetime.strptime(meeting_time_str, "%Y-%m-%dT%H:%M")
+    except ValueError:
+        flash("Invalid date format. Please use the provided date-time picker.", "danger")
+        return redirect(request.referrer)
+
+    # Validate posting ID
+    if not posting_id:
+        flash("No job posting associated with this meeting.", "danger")
+        return redirect(request.referrer)
+
+    # Fetch the applicant from the database
+    applicant = User.query.filter_by(username=applicant_username).first()
+    if not applicant:
+        flash("Applicant not found.", "danger")
+        return redirect(request.referrer)
+
+    # Validate the job posting exists
+    job_posting = Recruiter_Postings.query.filter_by(postingId=posting_id, recruiterId=current_user.id).first()
+    if not job_posting:
+        flash("Job posting not found or you are not authorized to schedule a meeting for this posting.", "danger")
+        return redirect(request.referrer)
+
+    # Create and save the meeting
+    new_meeting = Meetings(
+        recruiter_id=current_user.id,
+        applicant_id=applicant.id,
+        meeting_time=meeting_time,
+        posting_id=posting_id  # Associate the meeting with the job posting
+    )
+
+    db.session.add(new_meeting)
+    db.session.commit()
+
+    flash(f"Meeting scheduled with {applicant_username} on {meeting_time} for job posting '{job_posting.jobTitle}'.", "success")
+    return redirect(request.referrer)
+
+@app.route('/recruiter/meetings', methods=['GET'])
+@login_required
+def recruiter_meetings():
+    meetings = Meetings.query.filter_by(recruiter_id=current_user.id).all()
+    return render_template("recruiter_meetings.html", meetings=meetings)
+
+@app.route('/applicant/meetings', methods=['GET'])
+@login_required
+def applicant_meetings():
+    meetings = Meetings.query.filter_by(applicant_id=current_user.id).all()
+    return render_template("applicant_meetings.html", meetings=meetings)
+@app.route('/shortlisted/<int:posting_id>', methods=['GET'])
+@login_required
+def view_shortlisted_for_posting(posting_id):
+    """
+    Fetch and display all shortlisted applicants for a specific job posting.
+    """
+    # Ensure the current user is the recruiter for this posting
+    posting = Recruiter_Postings.query.filter_by(postingId=posting_id, recruiterId=current_user.id).first_or_404()
+
+    # Fetch all shortlisted applicants for the job posting
+    shortlisted_applicants = PostingApplications.query.filter_by(
+        postingId=posting_id,
+        recruiterId=current_user.id,
+        shortlisted=True
+    ).all()
+
+    return render_template("shortlisted_applicants.html", posting=posting, applicants=shortlisted_applicants)
+
+
+@app.route('/shortlisted', methods=['GET'])
+@login_required
+def view_all_shortlisted():
+    """
+    Fetch and display all shortlisted applicants for all job postings of the recruiter.
+    """
+    if not current_user.is_recruiter:
+        flash("Unauthorized access! Only recruiters can view this page.", "danger")
+        return redirect(url_for('home'))
+
+    # Fetch all job postings for the current recruiter
+    job_postings = Recruiter_Postings.query.filter_by(recruiterId=current_user.id).all()
+
+    # Create a dictionary to group shortlisted applicants by job postings
+    shortlisted_by_posting = {}
+    for posting in job_postings:
+        shortlisted_by_posting[posting] = PostingApplications.query.filter_by(
+            postingId=posting.postingId,
+            recruiterId=current_user.id,
+            shortlisted=True
+        ).all()
+
+    return render_template(
+        "shortlisted_applicants.html",
+        shortlisted_by_posting=shortlisted_by_posting
+    )
+
+
+@app.route('/shortlist/<int:posting_id>/<int:applicant_id>', methods=['POST'])
+@login_required
+def toggle_shortlist(posting_id, applicant_id):
+    """
+    Toggle the shortlisted status of an applicant for a specific job posting.
+    """
+    application = PostingApplications.query.filter_by(
+        postingId=posting_id,
+        recruiterId=current_user.id,
+        applicantId=applicant_id
+    ).first_or_404()
+
+    # Toggle shortlist status
+    application.shortlisted = not application.shortlisted
+    db.session.commit()
+
+    # Add a flash message for feedback
+    flash(
+        f"Applicant {'shortlisted' if application.shortlisted else 'unshortlisted'} successfully!",
+        "success"
+    )
+
+    # Redirect back to the referring page
+    return redirect(request.referrer)
