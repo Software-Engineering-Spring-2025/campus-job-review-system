@@ -4,7 +4,7 @@
 [![DOI](https://zenodo.org/badge/887986629.svg)](https://doi.org/10.5281/zenodo.14219785)
 [![License](https://img.shields.io/github/license/SEFall24-Team61/campus-job-review-system)](https://github.com/SEFall24-Team61/campus-job-review-system/blob/main/LICENSE)
 [![GitHub Release](https://img.shields.io/github/release/SEFall24-Team61/campus-job-review-system.svg)](https://github.com/SEFall24-Team61/campus-job-review-system/releases)
-[![codecov.io](https://codecov.io/github/SEFall24-Team61/campus-job-review-system/coverage.svg?branch=master)](https://codecov.io/github/SEFall24-Team61/campus-job-review-system?branch=main)
+[![codecov](https://codecov.io/github/SEFall24-Team61/campus-job-review-system/graph/badge.svg?token=ZGE7LGPUGY)](https://codecov.io/github/SEFall24-Team61/campus-job-review-system)
 [![Build main](https://github.com/SEFall24-Team61/campus-job-review-system/actions/workflows/check-commits.yml/badge.svg)](https://github.com/SEFall24-Team61/campus-job-review-system/actions/workflows/check-commits.yml)
 [![Open Issues](https://img.shields.io/github/issues/SEFall24-Team61/campus-job-review-system)](https://github.com/SEFall24-Team61/campus-job-review-system/issues)
 [![Closed Issues](https://img.shields.io/github/issues-closed/SEFall24-Team61/campus-job-review-system?color=brightgreen)](https://github.com/SEFall24-Team61/campus-job-review-system/issues?q=is%3Aissue+is%3Aclosed)
