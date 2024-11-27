@@ -125,6 +125,9 @@ The rules listed below are to be followed by the ones who will be contributing t
   - It is encouraged to add name tags such as "feature/" or "patch/" in the branches if it is used to add code-patches or features in the project.
 
 
+## 📈 Code Coverage
+[![codecov](https://codecov.io/github/SEFall24-Team61/campus-job-review-system/graph/badge.svg?token=ZGE7LGPUGY)](https://codecov.io/github/SEFall24-Team61/campus-job-review-system) It is part of the [Github Workflow Build](https://github.com/SEFall24-Team61/campus-job-review-system/actions/workflows/code_coverage.yml)
+
 ## 🌐 Future Scope
 We’re excited about the enhancements coming to the NCSU Campus Jobs Review System! Here’s what’s on the horizon:
 - **Skill Assessment Tests:** Introduce integrated assessments to help candidates showcase their abilities to recruiters directly through the platform.
