@@ -9,6 +9,12 @@ from datetime import datetime
 
 app.config["SECRET_KEY"] = "5791628bb0b13ce0c676dfde280ba245"
 
+## testing resume upload on 2/21
+@app.route("/resume_upload")
+def resume_upload():
+    """An API for the user to be able to access the homepage through the navbar"""
+    entries = Reviews.query.all()
+    return render_template("index.html", entries=entries)
 
 @app.route("/")
 @app.route("/home")

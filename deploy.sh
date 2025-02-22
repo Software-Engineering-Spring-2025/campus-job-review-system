@@ -13,7 +13,7 @@ fi
 
 # Run the Docker container
 echo "Running Docker container..."
-docker run -d -p 3000:5000 --name flask-app flask-app
+docker run -d -p 3000:5000 --name flask-app -v "$(pwd)":/app flask-app
 
 # Final message with URL
 echo "Deployment complete. Flask app is running at http://localhost:3000"
