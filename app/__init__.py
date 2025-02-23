@@ -37,10 +37,13 @@ login_manager.login_view = "login"
 login_manager.login_message_category = "info"
 migrate = Migrate(app, db, render_as_batch=True)
 
-
+first_request = True  # Flag to track the first request
 @app.before_first_request
 def create_table():
-    db.create_all()
-
+    global first_request
+    if first_request:
+        db.create_all()
+    
+    first_request = False
 
 from app import routes, models
