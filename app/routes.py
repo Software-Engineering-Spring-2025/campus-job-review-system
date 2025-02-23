@@ -7,14 +7,22 @@ from app.models import Meetings, Reviews, User, JobApplication, Recruiter_Postin
 from app.forms import RegistrationForm, LoginForm, ReviewForm, JobApplicationForm, PostingForm
 from datetime import datetime
 
+## additions made 2/22
+import os
+from werkzeug.utils import secure_filename
+from flask import Flask, flash, current_app
+
+
 app.config["SECRET_KEY"] = "5791628bb0b13ce0c676dfde280ba245"
 
+#####################################
+#####################################
 ## testing resume upload on 2/21
-@app.route("/resume_upload")
-def resume_upload():
-    """An API for the user to be able to access the homepage through the navbar"""
-    entries = Reviews.query.all()
-    return render_template("index.html", entries=entries)
+# @app.route("/resume_upload")
+# def resume_upload():
+#     """An API for the user to be able to access the homepage through the navbar"""
+#     entries = Reviews.query.all()
+#     return render_template("index.html", entries=entries)
 
 @app.route("/")
 @app.route("/home")
@@ -23,6 +31,61 @@ def home():
     entries = Reviews.query.all()
     return render_template("index.html", entries=entries)
 
+#app = Flask(__name__)  # Initialize your Flask app
+app.config['UPLOAD_FOLDER'] = 'uploads_resume'  # Set the upload folder
+
+ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx'}
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/resume_upload', methods=['GET', 'POST'])  # Use @app.route directly
+def resume_upload():
+    message = None
+    message_type = None
+
+    if request.method == 'POST':
+        if 'resume' not in request.files:
+            message = 'No file part'
+            message_type = 'danger'
+            return redirect(request.url)
+
+        file = request.files['resume']
+        if file.filename == '':
+            message = 'No selected file'
+            message_type = 'danger'
+            return redirect(request.url)
+
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+
+            upload_folder = app.config['UPLOAD_FOLDER']  # Access config directly
+
+            try:
+                user_id = current_user.id  # Get user ID (assuming login is required)
+            except AttributeError:  # Handle case where user is not logged in
+                flash("You must be logged in to upload a resume.", "danger")
+                return redirect(url_for('login'))  # Redirect to login page
+
+            user_folder = os.path.join(upload_folder, str(user_id))
+            if not os.path.exists(user_folder):
+                os.makedirs(user_folder)
+
+            file_path = os.path.join(user_folder, filename)
+            file.save(file_path)
+
+            message = 'File successfully uploaded'
+            message_type = 'success'
+            return redirect(url_for('resume_upload'))
+        else:
+            message = 'Allowed file types are pdf, doc, docx'
+            message_type = 'danger'
+
+    return render_template('resume_upload.html', message=message, message_type=message_type)
+
+#####################################
+#####################################
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
