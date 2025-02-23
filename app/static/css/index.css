@@ -1,10 +1,31 @@
+/* 
+#######################################################
+# MAKING EDITS 2/22 - fixing background for resume_upload
+#######################################################
 body{
 	margin:0;
 	padding:0;
 	background:#fff;
 	font-family: 'Raleway',sans-serif;
 	color: #fff;
+} */
+
+body {
+    margin: 0;
+    padding: 0;
+    /* Remove background color from body */
+    /* background: #fff;  */
+    font-family: 'Raleway', sans-serif;
+    color: #fff;
+    /* Add background properties */
+    background-image: url('overlay.png'), url('WolfPlaza.jpg'); /* Your image paths */
+    background-position: top;
+    background-size: cover;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    min-height: 100vh; /* Ensure full viewport height */
 }
+
 .banner{
 	height: 100%;
 	width: 100%;
