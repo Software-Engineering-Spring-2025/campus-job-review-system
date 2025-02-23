@@ -29,24 +29,26 @@ body {
 .banner{
 	height: 100%;
 	width: 100%;
+	/* TRYING TO GET THE RESUME UPLOADED SUCCESSFULLY MESSAGE TO DISPLAY
 	background:url('overlay.png'),url('WolfPlaza.jpg');
 	background-position: top;
 	background-size: cover;
 	background-attachment: fixed;
-	background-repeat: no-repeat;
+	background-repeat: no-repeat; */
 }
 .addPadding{
 	padding-top: 75px;	
 }
 .banner2{
 	height: 100vh;
-	width: 100%;
+	width: 100%; 
+	/*
 	background:url('overlay.png'),url('WolfPlaza.jpg');
 	background-position: top;
 	color: #fff;
 	background-size:cover;
 	background-attachment: fixed;
-	background-repeat: no-repeat;
+	background-repeat: no-repeat;*/
 }
 .banner .navbar{
 	margin-top:0%;

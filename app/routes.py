@@ -31,7 +31,6 @@ def home():
     entries = Reviews.query.all()
     return render_template("index.html", entries=entries)
 
-#app = Flask(__name__)  # Initialize your Flask app
 app.config['UPLOAD_FOLDER'] = 'uploads_resume'  # Set the upload folder
 
 ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx'}
@@ -40,49 +39,90 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/resume_upload', methods=['GET', 'POST'])  # Use @app.route directly
-def resume_upload():
-    message = None
-    message_type = None
+# @app.route('/resume_upload', methods=['GET', 'POST'])  # Use @app.route directly
+# def resume_upload():
+#     message = None
+#     message_type = None
 
+#     if request.method == 'POST':
+#         if 'resume' not in request.files:
+#             message = 'No file part'
+#             message_type = 'danger'
+#             return redirect(request.url)
+
+#         file = request.files['resume']
+#         if file.filename == '':
+#             message = 'No selected file'
+#             message_type = 'danger'
+#             return redirect(request.url)
+
+#         if file and allowed_file(file.filename):
+#             filename = secure_filename(file.filename)
+
+#             upload_folder = app.config['UPLOAD_FOLDER']  # Access config directly
+
+#             try:
+#                 user_id = current_user.id  # Get user ID (assuming login is required)
+#             except AttributeError:  # Handle case where user is not logged in
+#                 flash("You must be logged in to upload a resume.", "danger")
+#                 return redirect(url_for('login'))  # Redirect to login page
+
+#             user_folder = os.path.join(upload_folder, str(user_id))
+#             if not os.path.exists(user_folder):
+#                 os.makedirs(user_folder)
+
+#             file_path = os.path.join(user_folder, filename)
+#             file.save(file_path)
+
+#             message = 'File successfully uploaded'
+#             message_type = 'success'
+#             return redirect(url_for('resume_upload'))
+#         else:
+#             message = 'Allowed file types are pdf, doc, docx'
+#             message_type = 'danger'
+
+#     return render_template('resume_upload.html', message=message, message_type=message_type)
+
+@app.route('/resume_upload', methods=['GET', 'POST'])
+def resume_upload():
     if request.method == 'POST':
         if 'resume' not in request.files:
-            message = 'No file part'
-            message_type = 'danger'
+            flash('No file part', 'danger')  # Use flash()
             return redirect(request.url)
 
         file = request.files['resume']
         if file.filename == '':
-            message = 'No selected file'
-            message_type = 'danger'
+            flash('No selected file', 'danger')  # Use flash()
             return redirect(request.url)
 
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-
-            upload_folder = app.config['UPLOAD_FOLDER']  # Access config directly
+            upload_folder = app.config['UPLOAD_FOLDER']
 
             try:
-                user_id = current_user.id  # Get user ID (assuming login is required)
-            except AttributeError:  # Handle case where user is not logged in
+                user_id = current_user.id
+            except AttributeError:
                 flash("You must be logged in to upload a resume.", "danger")
-                return redirect(url_for('login'))  # Redirect to login page
+                return redirect(url_for('login'))
 
             user_folder = os.path.join(upload_folder, str(user_id))
             if not os.path.exists(user_folder):
                 os.makedirs(user_folder)
 
             file_path = os.path.join(user_folder, filename)
-            file.save(file_path)
+            try:
+                file.save(file_path)
+                flash('Resume uploaded, thanks!', 'success')  # Flash success message
+                return redirect(url_for('resume_upload'))
+            except Exception as e:  # Catch potential save errors
+                flash(f'Error uploading file: {e}', 'danger')  # Flash error message
+                return redirect(request.url)
 
-            message = 'File successfully uploaded'
-            message_type = 'success'
-            return redirect(url_for('resume_upload'))
         else:
-            message = 'Allowed file types are pdf, doc, docx'
-            message_type = 'danger'
+            flash('Allowed file types are pdf, doc, docx', 'danger')  # Use flash()
+            return redirect(request.url)
 
-    return render_template('resume_upload.html', message=message, message_type=message_type)
+    return render_template('resume_upload.html')  # No need to pass message variables
 
 #####################################
 #####################################
