@@ -59,4 +59,9 @@
 
 </div>
 
+<script>
+    console.log("Resume Path:", "{{ resume_path }}");
+    console.log("Current User Resume:", "{{ current_user.resume_path }}");
+    console.log("Generated URL:", "{{ url_for('uploaded_file', user_id=current_user.id, filename=current_user.resume_path) }}");
+</script>
 {% endblock content %}

@@ -28,12 +28,12 @@ def home():
 
 # @app.route('/uploads/<filename>')  # New route to serve uploads
 # def uploaded_file(filename):
-#     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+#      return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 @app.route('/uploads/<int:user_id>/<filename>')  # Include user_id in the URL
 def uploaded_file(user_id, filename):
-    user_folder = os.path.join(app.config['UPLOAD_FOLDER'], str(user_id))
-    return send_from_directory(user_folder, filename)
+     user_folder = os.path.join(app.config['UPLOAD_FOLDER'], str(user_id))
+     return send_from_directory(user_folder, filename)
 
 app.config['UPLOAD_FOLDER'] = 'uploads_resume'  # Set the upload folder
 
@@ -86,6 +86,64 @@ def resume_upload():
 
     return render_template('resume_upload.html')  # No need to pass message variables
 
+
+# @app.route('/uploads/<int:user_id>/<filename>')  # Route for serving uploaded resumes
+# def uploaded_file(user_id, filename):
+#     """Serve uploaded resume files."""
+#     user_folder = os.path.join(app.config['UPLOAD_FOLDER'], str(user_id))
+#     file_path = os.path.join(user_folder, filename)
+
+#     # Debugging log to confirm the path exists
+#     print(f"Trying to serve file: {file_path}")
+
+#     if not os.path.exists(file_path):
+#         print("File does NOT exist!")  # Debugging log
+#         abort(404)  # Return "Not Found" error if file is missing
+
+#     return send_from_directory(user_folder, filename)
+
+# @app.route('/resume_upload', methods=['GET', 'POST'])
+# @login_required
+# def resume_upload():
+#     """Handles the resume upload functionality."""
+#     if request.method == 'POST':
+#         if 'resume' not in request.files:
+#             flash('No file part', 'danger')  
+#             return redirect(request.url)
+
+#         file = request.files['resume']
+#         if file.filename == '':
+#             flash('No selected file', 'danger')  
+#             return redirect(request.url)
+
+#         if file and allowed_file(file.filename):
+#             filename = secure_filename(file.filename)
+
+#             # Ensure the user-specific directory exists
+#             user_folder = os.path.join(app.config['UPLOAD_FOLDER'], str(current_user.id))
+#             os.makedirs(user_folder, exist_ok=True)  # Create folder if it doesn't exist
+#             print(f"Created directory: {user_folder}")  # Debugging log
+
+#             file_path = os.path.join(user_folder, filename)
+#             file.save(file_path)  # Save the file
+
+#             # Update the user's resume path in the database (save only the filename)
+#             current_user.resume_path = filename
+#             db.session.commit()
+
+#             flash('Resume uploaded successfully!', 'success')
+#             return redirect(url_for('account'))
+
+#     return render_template('resume_upload.html')
+
+# @app.route('/account')
+# @login_required
+# def account():
+#     """User account page showing resume and details."""
+#     print(f"User ID: {current_user.id}")
+#     print(f"Resume Path: {current_user.resume_path}")
+
+#     return render_template('account.html', resume_path=current_user.resume_path)
 #####################################
 #####################################
 

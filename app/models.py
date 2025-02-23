@@ -60,7 +60,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(60), nullable=False)
     is_recruiter = db.Column(db.Boolean, default=False)
     ## updating the user to store the resume 2/22
-    resume_path = db.Column(db.String(255), nullable=True) # Add this line
+    resume_path = db.Column(db.String(255), nullable=True) 
 
     # Relationships
     reviews = db.relationship("Reviews", backref="author", lazy=True)

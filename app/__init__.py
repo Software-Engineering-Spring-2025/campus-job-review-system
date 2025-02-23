@@ -8,6 +8,7 @@ from flask_socketio import SocketIO
 from apscheduler.schedulers.background import BackgroundScheduler
 from app.services.job_fetcher import fetch_job_listings
 import pytz
+from flask import has_request_context
 
 cached_jobs = []
 
@@ -47,3 +48,18 @@ def create_table():
     first_request = False
 
 from app import routes, models
+
+# @app.before_request
+# def before_request_once():
+#     """Runs only once per session instead of every request."""
+#     if not has_request_context():
+#         return
+#     if not hasattr(app, '_before_request_ran'):
+#         app._before_request_ran = True
+#         # Run the initialization code here
+#         def create_table():
+#     global first_request
+#     if first_request:
+#         db.create_all()
+    
+#     first_request = False
