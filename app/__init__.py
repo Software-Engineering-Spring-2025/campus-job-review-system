@@ -28,7 +28,8 @@ scheduler.start()
 
 
 app = Flask(__name__)
-socketio = SocketIO(app)
+#socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 app.config.from_object(Config)
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)

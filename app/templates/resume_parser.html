@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="banner2">
+    <div class="col-md-8 offset-md-2">
+        <h1>Upload your resume and let AI suggest you improvements</h1>
+        <input id="uploadInput" type="file" multiple />
+        <br />
+        <label for="fileNum">Selected files:</label>
+        <output id="fileNum">0</output>;
+        <br />
+        <label for="fileSize">Total size:</label>
+        <output id="fileSize">0</output>
+        <br />
+        <button id="uploadButton" onclick="uploadPDF(event)">Upload PDF</button>
+    </div>
+    <script>
+        async function uploadPDF(e) {
+            e.preventDefault();
+            const fileInput = document.getElementById("uploadInput");
+            const button = document.getElementById('uploadButton');
+            button.disabled = true;
+            button.textContent = 'Thinking..';
+            const file = fileInput.files[0]; // Get the selected file
+            console.log(file, fileInput)
+            if (!file) {
+                alert("Please select a PDF file!");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("file", file); // Append the file
+
+            try {
+                const response = await fetch("/resume_parser", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const result = await response.json();
+                console.log('result here: ', result.result)
+                const resultDisp = document.getElementById("result");
+                resultDisp.textContent = result.result;
+                button.disabled = false;
+                button.textContent = 'Upload PDF';
+                //alert(result.result);
+            } catch (error) {
+                console.error("Error uploading PDF:", error);
+            }
+        }
+
+        const uploadInput = document.getElementById("uploadInput");
+        uploadInput.addEventListener(
+          "change",
+          () => {
+            // Calculate total size
+            let numberOfBytes = 0;
+            for (const file of uploadInput.files) {
+              numberOfBytes += file.size;
+            }
+  
+            // Approximate to the closest prefixed unit
+            const units = [
+              "B",
+              "KiB",
+              "MiB",
+              "GiB",
+              "TiB",
+              "PiB",
+              "EiB",
+              "ZiB",
+              "YiB",
+            ];
+            const exponent = Math.min(
+              Math.floor(Math.log(numberOfBytes) / Math.log(1024)),
+              units.length - 1,
+            );
+            const approx = numberOfBytes / 1024 ** exponent;
+            const output =
+              exponent === 0
+                ? `${numberOfBytes} bytes`
+                : `${approx.toFixed(3)} ${
+                    units[exponent]
+                  } (${numberOfBytes} bytes)`;
+  
+            document.getElementById("fileNum").textContent =
+              uploadInput.files.length;
+            document.getElementById("fileSize").textContent = output;
+          },
+          false,
+        );
+      </script>
+      <div style="width: 50vw; align-content: center; align-self: center;">
+          <p id="result" style="overflow-y: scroll;">
+        </p>
+      </div>
+
+</div>
+  
+
+{% endblock %}

@@ -18,3 +18,5 @@ werkzeug==2.2.3
 email_validator
 
 ollama
+pdfquery
+PyPDF2
