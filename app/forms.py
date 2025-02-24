@@ -14,6 +14,7 @@ from wtforms import (
 )
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, URL
 from app.models import User
+from flask_wtf.file import FileField, FileAllowed #for resume uploading
 
 
 class RegistrationForm(FlaskForm):
@@ -98,6 +99,7 @@ class JobApplicationForm(FlaskForm):
                  ("technical", "Technical"), ("offer", "Offer")],
         validators=[DataRequired()]
     )
+    resume = FileField("Upload Resume", validators=[FileAllowed(["pdf", "doc", "docx"])]) #for resume uploading
     submit = SubmitField("Save")
 
 class PostingForm(FlaskForm):

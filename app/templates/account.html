@@ -27,7 +27,7 @@
     {% if resume_path %}
         <p></p>
         <p><strong>Your resume:</strong> <a href="{{ url_for('serve_resume', path=resume_path.split('/')[-1]) }}" target="_blank">View Resume</a></p> 
-        <p>Generated URL: {{ url_for('serve_resume', path=resume_path.split('/')[-1]) }}</p> 
+        <!-- <p>Generated URL: {{ url_for('serve_resume', path=resume_path.split('/')[-1]) }}</p>  -->
         {% endif %}
 
     <div class="mt-4">

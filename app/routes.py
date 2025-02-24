@@ -11,6 +11,10 @@ from datetime import datetime
 import os
 from werkzeug.utils import secure_filename
 from flask import Flask, flash, current_app
+# added on 2/24
+from flask import send_from_directory, current_app  # NEW
+from werkzeug.utils import secure_filename  # NEW
+
 
 
 app.config["SECRET_KEY"] = "5791628bb0b13ce0c676dfde280ba245"
@@ -246,13 +250,15 @@ def getVacantJobs():
     postings = Recruiter_Postings.query.all()
     return render_template("dashboard.html", postings=postings)
 
-
 @app.route("/apply/<int:posting_id>", methods=["POST"])
 @login_required
 def applyForJob(posting_id):
     postings = Recruiter_Postings.query.all()
     recruiter_id = request.form.get('recruiter_id')
     applicant_id = current_user.id
+    resume_filename = None
+
+    # Check if the applicant has already applied
     existing_application = PostingApplications.query.filter_by(
         postingId=posting_id,
         recruiterId=recruiter_id,
@@ -260,21 +266,74 @@ def applyForJob(posting_id):
     ).first()
 
     if existing_application:
-        # If application exists, redirect or show a message
         flash("You have already applied for this job.", "warning")
         return render_template("dashboard.html", postings=postings)
-    
+
+    # Handle Resume Upload
+    if 'resume' in request.files:
+        file = request.files['resume']
+        if file.filename != '' and allowed_file(file.filename):  # Validate file type
+            resume_filename = secure_filename(file.filename)
+            resume_path = os.path.join(UPLOAD_FOLDER, resume_filename)
+            file.save(resume_path)  # Save resume to 'static/resumes/'
+        else:
+            flash("Invalid resume file. Only PDF, DOC, or DOCX allowed.", "danger")
+            return redirect(request.referrer)
+
+    # Create a new job application
     new_application = PostingApplications(
-        postingId = posting_id,
-        recruiterId = recruiter_id,
-        applicantId = applicant_id
+        postingId=posting_id,
+        recruiterId=recruiter_id,
+        applicantId=applicant_id
     )
 
     db.session.add(new_application)
     db.session.commit()
 
-    flash("Application successfully submitted to the recruiter!", "success")
+    # Store resume in JobApplication model
+    job_application = JobApplication(
+        job_link=str(posting_id),  # Assuming posting_id is used as job reference
+        applied_on=datetime.utcnow().date(),
+        last_update_on=datetime.utcnow().date(),
+        status="applied",
+        user_id=applicant_id,
+        resume_path=f"static/resumes/{resume_filename}" if resume_filename else None
+    )
+
+    db.session.add(job_application)
+    db.session.commit()
+
+    flash("Application successfully submitted with resume!", "success")
     return render_template("dashboard.html", postings=postings)
+
+# @app.route("/apply/<int:posting_id>", methods=["POST"])
+# @login_required
+# def applyForJob(posting_id):
+#     postings = Recruiter_Postings.query.all()
+#     recruiter_id = request.form.get('recruiter_id')
+#     applicant_id = current_user.id
+#     existing_application = PostingApplications.query.filter_by(
+#         postingId=posting_id,
+#         recruiterId=recruiter_id,
+#         applicantId=applicant_id
+#     ).first()
+
+#     if existing_application:
+#         # If application exists, redirect or show a message
+#         flash("You have already applied for this job.", "warning")
+#         return render_template("dashboard.html", postings=postings)
+    
+#     new_application = PostingApplications(
+#         postingId = posting_id,
+#         recruiterId = recruiter_id,
+#         applicantId = applicant_id
+#     )
+
+#     db.session.add(new_application)
+#     db.session.commit()
+
+#     flash("Application successfully submitted to the recruiter!", "success")
+#     return render_template("dashboard.html", postings=postings)
 
 
 @app.route("/add_jobs", methods=['GET', 'POST'])

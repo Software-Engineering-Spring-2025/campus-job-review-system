@@ -78,6 +78,8 @@ class JobApplication(db.Model):
     last_update_on = db.Column(db.Date, nullable=False)
     status = db.Column(db.String(50), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    resume_path = db.Column(db.String(255), nullable=True)  # Store resume file path
+
 
     def __repr__(self):
         return f"<JobApplication {self.id} - {self.status}>"
