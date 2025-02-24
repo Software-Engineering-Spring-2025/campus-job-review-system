@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, flash, url_for, abort, jsonify
+from flask import render_template, request, send_from_directory, redirect, flash, url_for, abort, jsonify
 from flask_login import login_user, current_user, logout_user, login_required
 from app.services.job_fetcher import fetch_job_listings
 from app import app, db, bcrypt
@@ -34,15 +34,6 @@ def extract_text_from_pdf(pdf_path):
 
 app.config["SECRET_KEY"] = "5791628bb0b13ce0c676dfde280ba245"
 
-#####################################
-#####################################
-## testing resume upload on 2/21
-# @app.route("/resume_upload")
-# def resume_upload():
-#     """An API for the user to be able to access the homepage through the navbar"""
-#     entries = Reviews.query.all()
-#     return render_template("index.html", entries=entries)
-
 @app.route("/")
 @app.route("/home")
 def home():
@@ -50,101 +41,60 @@ def home():
     entries = Reviews.query.all()
     return render_template("index.html", entries=entries)
 
-app.config['UPLOAD_FOLDER'] = 'uploads_resume'  # Set the upload folder
+# #####################################
+# #####################################
+# TRYING AGAIN FEB 23
+# Configuration for file uploads
+UPLOAD_FOLDER = '/home/runner/work/CAMPUS-JOB-REVIEW-SYSTEM_2/app/resumes'  # Create this folder in your project
+ALLOWED_EXTENSIONS = {'pdf', 'docx', 'txt'}  # Add other extensions as needed
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx'}
+# Ensure the upload directory exists
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# @app.route('/resume_upload', methods=['GET', 'POST'])  # Use @app.route directly
-# def resume_upload():
-#     message = None
-#     message_type = None
-
-#     if request.method == 'POST':
-#         if 'resume' not in request.files:
-#             message = 'No file part'
-#             message_type = 'danger'
-#             return redirect(request.url)
-
-#         file = request.files['resume']
-#         if file.filename == '':
-#             message = 'No selected file'
-#             message_type = 'danger'
-#             return redirect(request.url)
-
-#         if file and allowed_file(file.filename):
-#             filename = secure_filename(file.filename)
-
-#             upload_folder = app.config['UPLOAD_FOLDER']  # Access config directly
-
-#             try:
-#                 user_id = current_user.id  # Get user ID (assuming login is required)
-#             except AttributeError:  # Handle case where user is not logged in
-#                 flash("You must be logged in to upload a resume.", "danger")
-#                 return redirect(url_for('login'))  # Redirect to login page
-
-#             user_folder = os.path.join(upload_folder, str(user_id))
-#             if not os.path.exists(user_folder):
-#                 os.makedirs(user_folder)
-
-#             file_path = os.path.join(user_folder, filename)
-#             file.save(file_path)
-
-#             message = 'File successfully uploaded'
-#             message_type = 'success'
-#             return redirect(url_for('resume_upload'))
-#         else:
-#             message = 'Allowed file types are pdf, doc, docx'
-#             message_type = 'danger'
-
-#     return render_template('resume_upload.html', message=message, message_type=message_type)
-
-@app.route('/resume_upload', methods=['GET', 'POST'])
-def resume_upload():
+@app.route("/account", methods=['GET', 'POST'])
+@login_required
+def account():
+    user = current_user
+    print("User's resume path (from database):", user.resume_path)  # Debugging: Print the path from the database.
+    
     if request.method == 'POST':
-        if 'resume' not in request.files:
-            flash('No file part', 'danger')  # Use flash()
-            return redirect(request.url)
-
-        file = request.files['resume']
-        if file.filename == '':
-            flash('No selected file', 'danger')  # Use flash()
-            return redirect(request.url)
-
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            upload_folder = app.config['UPLOAD_FOLDER']
-
-            try:
-                user_id = current_user.id
-            except AttributeError:
-                flash("You must be logged in to upload a resume.", "danger")
-                return redirect(url_for('login'))
-
-            user_folder = os.path.join(upload_folder, str(user_id))
-            if not os.path.exists(user_folder):
-                os.makedirs(user_folder)
-
-            file_path = os.path.join(user_folder, filename)
-            try:
-                file.save(file_path)
-                flash('Resume uploaded, thanks!', 'success')  # Flash success message
-                return redirect(url_for('resume_upload'))
-            except Exception as e:  # Catch potential save errors
-                flash(f'Error uploading file: {e}', 'danger')  # Flash error message
+        if 'resume' in request.files:  # Check if a file was uploaded
+            file = request.files['resume']
+            if file.filename == '':
+                flash('No selected file', 'warning')
                 return redirect(request.url)
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(filepath)
 
-        else:
-            flash('Allowed file types are pdf, doc, docx', 'danger')  # Use flash()
-            return redirect(request.url)
+                # Update the user's resume path in the database
+                user.resume_path = filepath  # Or just filename if you prefer
+                db.session.commit()
+                flash('Resume uploaded successfully!', 'success')
+                return redirect(url_for('account'))
+            else:
+                flash('Allowed file types are pdf, docx, txt', 'danger')
+                return redirect(request.url)
+        
+    resume_path = user.resume_path if user.is_authenticated else None
+    return render_template("account.html", title="Account", resume_path=resume_path)
 
-    return render_template('resume_upload.html')  # No need to pass message variables
 
-#####################################
-#####################################
+@app.route('/resume/<path:path>')  # Serve the resume
+@login_required
+def serve_resume(path):
+    user = current_user
+    directory = app.config['UPLOAD_FOLDER']
+    return send_from_directory(directory, path)
+    
+# #####################################
+# #####################################
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -644,10 +594,12 @@ def page_content_post():
     )
 
 
-@app.route("/account")
-@login_required
-def account():
-    return render_template("account.html", title="Account")
+# @app.route("/account", methods=['GET', 'POST'])
+# @login_required
+# def account():
+#     user = current_user
+#     resume_path = user.resume_path if user.is_authenticated else None # Get resume path from user object
+#     return render_template("account.html", title="Account", resume_path=resume_path)
 
 
 @app.route("/api/jobs", methods=["GET"])

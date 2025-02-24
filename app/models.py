@@ -59,9 +59,8 @@ class User(db.Model, UserMixin):
     image_file = db.Column(db.String(20), nullable=False, default="default.jpg")
     password = db.Column(db.String(60), nullable=False)
     is_recruiter = db.Column(db.Boolean, default=False)
-    ## updating the user to store the resume 2/21 
-    #resume = db.Column(db.String(255), nullable=True)
-    
+    ## updating the user to store the resume 2/22
+    resume_path = db.Column(db.String(255), nullable=True) 
 
     # Relationships
     reviews = db.relationship("Reviews", backref="author", lazy=True)
