@@ -1,49 +1,9 @@
 {% extends "base.html" %}
+
 {% block content %}
-
-<div class="container mt-4">
-    <h1 class="mb-4">Job Profile</h1>
-
-    <hr>
-
-    
-
-    <!-- Add Job Experience Section -->
-    <div class="mb-4">
-        <h3>Add Job Experience</h3>
-        <form method="POST" action="{{ url_for('job_profile') }}">
-            <div class="mb-3">
-                <label for="job_title" class="form-label">Job Title</label>
-                <input type="text" class="form-control" id="job_title" name="job_title" placeholder="e.g., Software Engineer" required>
-            </div>
-            <div class="mb-3">
-                <label for="company_name" class="form-label">Company Name</label>
-                <input type="text" class="form-control" id="company_name" name="company_name" placeholder="e.g., Google" required>
-            </div>
-            <div class="mb-3">
-                <label for="location" class="form-label">Location</label>
-                <input type="text" class="form-control" id="location" name="location" placeholder="e.g., New York, NY" required>
-            </div>
-            <div class="mb-3">
-                <label for="duration" class="form-label">Duration</label>
-                <input type="text" class="form-control" id="duration" name="duration" placeholder="e.g., Jan 2020 - Dec 2022" required>
-            </div>
-            <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                <textarea class="form-control" id="description" name="description" rows="4" placeholder="Describe your responsibilities and achievements..." required></textarea>
-            </div>
-            <div class="form-group">
-                <label for="skills">Skills</label>
-                <input type="text" name="skills" class="form-control" placeholder="e.g., Python, SQL, Project Management">
-            </div>        
-            <button type="submit" class="btn btn-success">Add Experience</button>
-        </form>
-    </div>
-
-    <hr>
-
-    <div class="mb-4">
-        <h3>Autofill Experience from resume</h3>
+<div class="banner2">
+    <div class="col-md-8 offset-md-2">
+        <h1>Upload your resume and let AI suggest you improvements</h1>
         <input id="uploadInput" type="file" multiple />
         <br />
         <label for="fileNum">Selected files:</label>
@@ -55,11 +15,10 @@
         <button id="uploadButton" onclick="uploadPDF(event)">Upload PDF</button>
     </div>
     <div class="col-md-8 offset-md-2" style="width: 50vw; align-content: center; align-self: center;">
-        <p id="result">
-      </p>
-      </div>
-
-      <script>
+      <p id="result">
+    </p>
+    </div>
+    <script>
         async function uploadPDF(e) {
             e.preventDefault();
             const fileInput = document.getElementById("uploadInput");
@@ -77,7 +36,7 @@
             formData.append("file", file); // Append the file
 
             try {
-                const response = await fetch("/resume_parser_we", {
+                const response = await fetch("/resume_parser", {
                     method: "POST",
                     body: formData
                 });
@@ -135,24 +94,9 @@
           false,
         );
       </script>
+      
 
-    <!-- Display Job Experiences -->
-    <div class="mb-4">
-        <h3>Your Job Experiences</h3>
-        {% if job_experiences %}
-            {% for job in job_experiences %}
-                <div class="mb-3">
-                    <h5>{{ job.job_title }} at {{ job.company_name }}</h5>
-                    <p><strong>Location:</strong> {{ job.location }}</p>
-                    <p><strong>Duration:</strong> {{ job.duration }}</p>
-                    <p><strong>Description:</strong> {{ job.description }}</p>
-                    <hr>
-                </div>
-            {% endfor %}
-        {% else %}
-            <p>No job experiences added yet.</p>
-        {% endif %}
-    </div>
 </div>
+  
 
-{% endblock content %}
+{% endblock %}
