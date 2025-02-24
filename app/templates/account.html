@@ -18,17 +18,15 @@
         </p>
     </div>
 
-    <div class="mt-4">
-        <h3>My Resume</h3>
-        {% if resume_path %}
-            <p>
-                <a href="{{ url_for('uploaded_file', user_id=current_user.id, filename=current_user.resume_path) }}" target="_blank">View Resume</a>
-            </p>
-            <p>Generated URL: {{ url_for('uploaded_file', user_id=current_user.id, filename=current_user.resume_path) }}</p>  ```
-        {% else %}
-            <p>No resume uploaded yet.</p>
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="resume">
+        <button type="submit">Upload Resume</button>
+    </form>
+    
+    {% if resume_path %}
+        <p>Your resume: <a href="{{ url_for('serve_resume', path=resume_path.split('/')[-1]) }}" target="_blank">View Resume</a></p> 
+        <p>Generated URL: {{ url_for('serve_resume', path=resume_path.split('/')[-1]) }}</p> 
         {% endif %}
-    </div>
 
     <div class="mt-4">
         <h3>My Reviews</h3>
@@ -59,9 +57,4 @@
 
 </div>
 
-<script>
-    console.log("Resume Path:", "{{ resume_path }}");
-    console.log("Current User Resume:", "{{ current_user.resume_path }}");
-    console.log("Generated URL:", "{{ url_for('uploaded_file', user_id=current_user.id, filename=current_user.resume_path) }}");
-</script>
 {% endblock content %}
