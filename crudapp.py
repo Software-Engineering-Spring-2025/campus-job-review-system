@@ -1,5 +1,6 @@
 from app import app, db
 from app.models import Vacancies
+import logging
 
 
 def insertVacancyData():
@@ -66,4 +67,6 @@ def createVacancies(
 
 if __name__ == "__main__":
     insertVacancyData()
+    logging.basicConfig(level=logging.INFO)
+    app.logger.setLevel(logging.INFO)
     app.run(debug=True)

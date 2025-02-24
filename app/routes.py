@@ -7,6 +7,15 @@ from app.models import Meetings, Reviews, User, JobApplication, Recruiter_Postin
 from app.forms import RegistrationForm, LoginForm, ReviewForm, JobApplicationForm, PostingForm
 from datetime import datetime
 
+import ollama
+from ollama import chat
+from ollama import ChatResponse
+
+from pdfquery import PDFQuery
+import base64
+import PyPDF2
+from io import BytesIO
+
 ## additions made 2/22
 import os
 from werkzeug.utils import secure_filename
@@ -14,6 +23,16 @@ from flask import Flask, flash, current_app
 # added on 2/24
 from flask import send_from_directory, current_app  # NEW
 from werkzeug.utils import secure_filename  # NEW
+
+
+def extract_text_from_pdf(pdf_path):
+    """Extract text from a PDF file."""
+    text = ""
+    with fitz.open(pdf_path) as doc:
+        for page in doc:
+            text += page.get_text("text") + "\n"  # Extract text from each page
+    return text if text.strip() else "No text found in the PDF."
+
 
 
 
@@ -135,6 +154,157 @@ def view_reviews():
     per_page = 5
     entries = Reviews.query.paginate(page=page, per_page=per_page)
     return render_template("view_reviews.html", entries=entries)
+
+
+@app.route("/resume_parser_we", methods=['POST'])
+@login_required
+def resume_parser_we():
+    """
+    LLM Integration that gives resume advice
+    """
+    available_models = ollama.list()
+    print('available models', available_models)
+
+    model_name = 'deepseek-r1:1.5b'
+    model_exists = any(model.model == model_name for model in available_models['models'])
+
+    if request.method == 'POST':
+        # if 'file' not in request.files:
+        #     return render_template("resume_parser.html", llmresponse = "no file added...")
+        # file = request.files['file']
+        text = ''
+        if request.files:
+            file_storage = request.files['file']  # Extract the FileStorage object
+
+            # Read the file content
+            file_content = file_storage.read()  # This returns the file content as bytes
+
+            # If you need to save the file
+            #file_storage.save('Resume-Srinivas_Vasudevan.pdf')
+
+            pdf_reader = PyPDF2.PdfReader(BytesIO(file_content))
+            for page in pdf_reader.pages:
+                text += page.extract_text()
+                text+= "\n"
+
+            print(model_exists, len(text) > 0, text)
+            try:
+                if model_exists and len(text) > 0:
+                    response: ChatResponse = chat(model='deepseek-r1:1.5b', messages=[{'role': 'user','content': 
+                                        f'''categorize the work experience you see in the following resume into following categories: 
+                                            job_title, 
+                                            company_name,
+                                            location,
+                                            duration,
+                                            description,
+                                            skills, 
+                                            give that output in a json formatt.
+                                            This work experience should only be extracted from the experience section of the resume. Do not parse the whole resume and give incorrect results.
+                                            You should essentially return an array of json objects each holding the work experience categorized correctly based on my requirements.   
+                                            Make sure that the answer you give me just has a json so that I dont run into parsing issues in my python script.  
+                                            a sample output would be: [{{"job_title":"",
+                                            "company_name":"",
+                                            "location":"",
+                                            "duration":"",
+                                            "description":"",
+                                            "skills":""}},
+                                            {{"job_title":"",
+                                            "company_name":"",
+                                            "location":"",
+                                            "duration":"",
+                                            "description":"",
+                                            "skills":""}}]      
+                                            see how it is an array of json objects and it only uses the work experience/professional experience section and nothing else. 
+                                            , the resume is : 
+                                            : {text}'''}])
+                    print(response.message.content)
+                    print(response.message.content[response.message.content.find('['):response.message.content.rfind(']')+1])
+                    we_json = json.loads(response.message.content[response.message.content.find('['):response.message.content.rfind(']')+1])
+                    for we in we_json:
+                        print(we)
+                        job_title = we["job_title"]
+                        company_name = we["company_name"]
+                        location =we["location"]
+                        duration = we["duration"]
+                        description =we["description"]
+                        skills = ','.join(we["skills"])
+
+                        new_job = JobExperience(
+                            job_title=job_title,
+                            company_name=company_name,
+                            location=location,
+                            duration=duration,
+                            description=description,
+                            skills=skills,
+                            username=current_user.username
+                        )
+                        db.session.add(new_job)
+                        db.session.commit()
+                    return jsonify({'status': 'Task complete', 'result': response.message.content[response.message.content.find('['):response.message.content.rfind(']')+1] })
+            except Exception as e:
+                print(f'{e}')
+        else:
+            return jsonify({'status': 'Failed', 'result': 'No file sent' })
+    
+    else:
+        if model_exists:
+            #response: ChatResponse = chat(model='deepseek-r1:1.5b', messages=[{'role': 'user','content': 'Why is the sky blue?'}])
+            #print(response.message.content)
+            return render_template("resume_parser.html", llmresponse = 'llm ready buddy..')
+        else:
+            return render_template("resume_parser.html", llmresponse = "model is not ready yet....")
+
+
+@app.route("/resume_parser", methods=['GET','POST'])
+@login_required
+def resume_parser():
+    """
+    LLM Integration that gives resume advice
+    """
+    available_models = ollama.list()
+    print('available models', available_models)
+
+    model_name = 'deepseek-r1:1.5b'
+    model_exists = any(model.model == model_name for model in available_models['models'])
+
+    
+
+    if request.method == 'POST':
+        # if 'file' not in request.files:
+        #     return render_template("resume_parser.html", llmresponse = "no file added...")
+        # file = request.files['file']
+        text = ''
+        if request.files:
+            file_storage = request.files['file']  # Extract the FileStorage object
+
+            # Read the file content
+            file_content = file_storage.read()  # This returns the file content as bytes
+
+            # If you need to save the file
+            #file_storage.save('Resume-Srinivas_Vasudevan.pdf')
+
+            pdf_reader = PyPDF2.PdfReader(BytesIO(file_content))
+            for page in pdf_reader.pages:
+                text += page.extract_text()
+
+            print(model_exists, len(text) > 0, text)
+            try:
+                if model_exists and len(text) > 0:
+                    response: ChatResponse = chat(model='deepseek-r1:1.5b', messages=[{'role': 'user','content': f'give improvement suggestions for this resume: {text}'}])
+                    print(response.message.content)
+                    return jsonify({'status': 'Task complete', 'result': response.message.content })
+            except Exception as e:
+                print(f'{e}')
+        else:
+            return jsonify({'status': 'Failed', 'result': 'No file sent' })
+    
+    else:
+        if model_exists:
+            #response: ChatResponse = chat(model='deepseek-r1:1.5b', messages=[{'role': 'user','content': 'Why is the sky blue?'}])
+            #print(response.message.content)
+            return render_template("resume_parser.html", llmresponse = 'llm ready buddy..')
+        else:
+            return render_template("resume_parser.html", llmresponse = "model is not ready yet....")
 
 
 @app.route("/review/new", methods=["GET", "POST"])
