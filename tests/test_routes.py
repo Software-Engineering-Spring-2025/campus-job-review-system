@@ -16,6 +16,8 @@ def client():
             db.create_all()
             yield client
             db.drop_all()
+        
+                
 
 
 @pytest.fixture

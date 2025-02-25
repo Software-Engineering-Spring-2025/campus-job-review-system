@@ -12,7 +12,7 @@ from wtforms import (
     SelectField,
     IntegerField
 )
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, URL
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, URL, Regexp
 from app.models import User
 from flask_wtf.file import FileField, FileAllowed #for resume uploading
 
@@ -24,9 +24,24 @@ class RegistrationForm(FlaskForm):
         "Username", validators=[DataRequired(), Length(min=2, max=20)]
     )
     email = StringField("Email", validators=[DataRequired(), Email()])
-    password = PasswordField("Password", validators=[DataRequired()])
+    # password = PasswordField("Password", validators=[DataRequired()])
+    # confirm_password = PasswordField(
+    #     "Confirm Password", validators=[DataRequired(), EqualTo("password")]
+    # )
+    password = PasswordField(
+        "Password",
+        validators=[
+            DataRequired(),
+            Length(min=12, message="Password must be at least 12 characters long and must contain at least one number, one uppercase letter, one lowercase letter, and one special character."),  # Custom message
+            Regexp(
+                r"(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~!@#$%^&*()_+=-`\[\]\{\}|;':\",./<>?]).*",
+                message="Password must contain at least one number, one uppercase letter, one lowercase letter, and one special character."  # Custom message
+            ),
+            EqualTo("confirm_password", message="Passwords must match"),
+        ],
+    )
     confirm_password = PasswordField(
-        "Confirm Password", validators=[DataRequired(), EqualTo("password")]
+        "Confirm Password", validators=[DataRequired()]
     )
     signup_as_recruiter = BooleanField('Signup as Recruiter')
     submit = SubmitField("Sign Up")
