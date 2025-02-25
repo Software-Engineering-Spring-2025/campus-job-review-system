@@ -20,6 +20,20 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Update apt and install dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install -y \
+          curl \
+          ca-certificates
+
+      - name: Install Ollama
+        run: |
+          curl -fsSL https://ollama.com/install.sh | bash
+
+      - name: Install deepseek
+        run: |
+          ollama run deepseek-r1:1.5b
+
       - name: Install dependencies
         run: |
           pip install --upgrade pip && pip install -r requirements.txt

@@ -6,6 +6,7 @@ from app.models import Meetings, Reviews, User, JobApplication, Recruiter_Postin
 
 from app.forms import RegistrationForm, LoginForm, ReviewForm, JobApplicationForm, PostingForm
 from datetime import datetime
+import json
 
 import ollama
 from ollama import chat
@@ -28,7 +29,7 @@ from werkzeug.utils import secure_filename  # NEW
 def extract_text_from_pdf(pdf_path):
     """Extract text from a PDF file."""
     text = ""
-    with fitz.open(pdf_path) as doc:
+    with open(pdf_path) as doc:
         for page in doc:
             text += page.get_text("text") + "\n"  # Extract text from each page
     return text if text.strip() else "No text found in the PDF."
@@ -156,8 +157,60 @@ def view_reviews():
     return render_template("view_reviews.html", entries=entries)
 
 
+@app.route("/resume_parser", methods=['GET','POST'])
+def resume_parser():
+    """
+    LLM Integration that gives resume advice
+    """
+    available_models = ollama.list()
+    print('available models', available_models)
+
+    model_name = 'deepseek-r1:1.5b'
+    model_exists = any(model.model == model_name for model in available_models['models'])
+
+    
+
+    if request.method == 'POST':
+        # if 'file' not in request.files:
+        #     return render_template("resume_parser.html", llmresponse = "no file added...")
+        # file = request.files['file']
+        text = ''
+        if request.files:
+            file_storage = request.files['file']  # Extract the FileStorage object
+
+            # Read the file content
+            file_content = file_storage.read()  # This returns the file content as bytes
+
+            # If you need to save the file
+            #file_storage.save('Resume-Srinivas_Vasudevan.pdf')
+            try:
+                pdf_reader = PyPDF2.PdfReader(BytesIO(file_content))
+                for page in pdf_reader.pages:
+                    text += page.extract_text()
+
+                print(model_exists, len(text) > 0, text)
+            
+                if model_exists and len(text) > 0:
+                    response: ChatResponse = chat(model='deepseek-r1:1.5b', messages=[{'role': 'user','content': f'give improvement suggestions for this resume: {text}'}])
+                    print(response.message.content)
+                    return jsonify({'status': 'Task complete', 'result': response.message.content })
+                else:
+                    return jsonify({'status': 'Task Failed', 'result': 'Possibly no model' })
+            except Exception as e:
+                print(f'{e}')
+                return jsonify({'status': 'Task failed', 'result': 'Possibly wrong file type' })
+        else:
+            return jsonify({'status': 'Failed', 'result': 'No file sent' })
+    
+    else:
+        if model_exists:
+            #response: ChatResponse = chat(model='deepseek-r1:1.5b', messages=[{'role': 'user','content': 'Why is the sky blue?'}])
+            #print(response.message.content)
+            return render_template("resume_parser.html", llmresponse = 'llm ready buddy..')
+        else:
+            return render_template("resume_parser.html", llmresponse = "model is not ready yet....")
+
 @app.route("/resume_parser_we", methods=['POST'])
-@login_required
 def resume_parser_we():
     """
     LLM Integration that gives resume advice
@@ -176,19 +229,21 @@ def resume_parser_we():
         if request.files:
             file_storage = request.files['file']  # Extract the FileStorage object
 
+
             # Read the file content
             file_content = file_storage.read()  # This returns the file content as bytes
+
+            try:
 
             # If you need to save the file
             #file_storage.save('Resume-Srinivas_Vasudevan.pdf')
 
-            pdf_reader = PyPDF2.PdfReader(BytesIO(file_content))
-            for page in pdf_reader.pages:
-                text += page.extract_text()
-                text+= "\n"
+                pdf_reader = PyPDF2.PdfReader(BytesIO(file_content))
+                for page in pdf_reader.pages:
+                    text += page.extract_text()
+                    text+= "\n"
 
-            print(model_exists, len(text) > 0, text)
-            try:
+            
                 if model_exists and len(text) > 0:
                     response: ChatResponse = chat(model='deepseek-r1:1.5b', messages=[{'role': 'user','content': 
                                         f'''categorize the work experience you see in the following resume into following categories: 
@@ -241,8 +296,11 @@ def resume_parser_we():
                         db.session.add(new_job)
                         db.session.commit()
                     return jsonify({'status': 'Task complete', 'result': response.message.content[response.message.content.find('['):response.message.content.rfind(']')+1] })
+                else:
+                    return jsonify({'status': 'Task Failed', 'result': 'Possibly no model' })
             except Exception as e:
                 print(f'{e}')
+                return jsonify({'status': 'Task Failed', 'result': 'Possibly wrong file type'})
         else:
             return jsonify({'status': 'Failed', 'result': 'No file sent' })
     
@@ -253,58 +311,7 @@ def resume_parser_we():
             return render_template("resume_parser.html", llmresponse = 'llm ready buddy..')
         else:
             return render_template("resume_parser.html", llmresponse = "model is not ready yet....")
-
-
-@app.route("/resume_parser", methods=['GET','POST'])
-@login_required
-def resume_parser():
-    """
-    LLM Integration that gives resume advice
-    """
-    available_models = ollama.list()
-    print('available models', available_models)
-
-    model_name = 'deepseek-r1:1.5b'
-    model_exists = any(model.model == model_name for model in available_models['models'])
-
-    
-
-    if request.method == 'POST':
-        # if 'file' not in request.files:
-        #     return render_template("resume_parser.html", llmresponse = "no file added...")
-        # file = request.files['file']
-        text = ''
-        if request.files:
-            file_storage = request.files['file']  # Extract the FileStorage object
-
-            # Read the file content
-            file_content = file_storage.read()  # This returns the file content as bytes
-
-            # If you need to save the file
-            #file_storage.save('Resume-Srinivas_Vasudevan.pdf')
-
-            pdf_reader = PyPDF2.PdfReader(BytesIO(file_content))
-            for page in pdf_reader.pages:
-                text += page.extract_text()
-
-            print(model_exists, len(text) > 0, text)
-            try:
-                if model_exists and len(text) > 0:
-                    response: ChatResponse = chat(model='deepseek-r1:1.5b', messages=[{'role': 'user','content': f'give improvement suggestions for this resume: {text}'}])
-                    print(response.message.content)
-                    return jsonify({'status': 'Task complete', 'result': response.message.content })
-            except Exception as e:
-                print(f'{e}')
-        else:
-            return jsonify({'status': 'Failed', 'result': 'No file sent' })
-    
-    else:
-        if model_exists:
-            #response: ChatResponse = chat(model='deepseek-r1:1.5b', messages=[{'role': 'user','content': 'Why is the sky blue?'}])
-            #print(response.message.content)
-            return render_template("resume_parser.html", llmresponse = 'llm ready buddy..')
-        else:
-            return render_template("resume_parser.html", llmresponse = "model is not ready yet....")
+        
 
 
 @app.route("/review/new", methods=["GET", "POST"])
