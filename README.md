@@ -2,15 +2,16 @@
 
 
 [![DOI](https://zenodo.org/badge/887986629.svg)](https://doi.org/10.5281/zenodo.14219785)
-[![License](https://img.shields.io/github/license/SEFall24-Team61/campus-job-review-system)](https://github.com/SEFall24-Team61/campus-job-review-system/blob/main/LICENSE)
-[![GitHub Release](https://img.shields.io/github/release/SEFall24-Team61/campus-job-review-system.svg)](https://github.com/SEFall24-Team61/campus-job-review-system/releases)
+[![License]([https://img.shields.io/github/license/SEFall24-Team61/campus-job-review-system](https://img.shields.io/badge/license-MIT-green?style=plastic&link=https%3A%2F%2Fgithub.com%2FSoftware-Engineering-Spring-2025%2Fcampus-job-review-system%2Fblob%2Fmain%2FLICENSE
+)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/blob/main/LICENSE)
+[![GitHub Release]([https://img.shields.io/github/release/SEFall24-Team61/campus-job-review-system.svg](https://img.shields.io/badge/release-beta-blue?style=plastic&color=blue&link=https%3A%2F%2Fgithub.com%2FSoftware-Engineering-Spring-2025%2Fcampus-job-review-system%2Freleases%2Ftag%2FBeta
+)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/releases/tag/Beta)
 [![codecov](https://codecov.io/github/SEFall24-Team61/campus-job-review-system/graph/badge.svg?token=ZGE7LGPUGY)](https://codecov.io/github/SEFall24-Team61/campus-job-review-system)
-[![Build main](https://github.com/SEFall24-Team61/campus-job-review-system/actions/workflows/check-commits.yml/badge.svg)](https://github.com/SEFall24-Team61/campus-job-review-system/actions/workflows/check-commits.yml)
-[![Open Issues](https://img.shields.io/github/issues/SEFall24-Team61/campus-job-review-system)](https://github.com/SEFall24-Team61/campus-job-review-system/issues)
-[![Closed Issues](https://img.shields.io/github/issues-closed/SEFall24-Team61/campus-job-review-system?color=brightgreen)](https://github.com/SEFall24-Team61/campus-job-review-system/issues?q=is%3Aissue+is%3Aclosed)
-[![Pull Requests](https://img.shields.io/github/issues-pr/SEFall24-Team61/campus-job-review-system)](https://github.com/SEFall24-Team61/campus-job-review-system/pulls)
-![GitHub last commit (branch)](https://img.shields.io/github/last-commit/SEFall24-Team61/campus-job-review-system/main)
-![GitHub code size in bytes](https://img.shields.io/github/repo-size/SEFall24-Team61/campus-job-review-system)
+[![Build main](https://github.com/SEFall24-Team61/campus-job-review-system/actions/workflows/check-commits.yml/badge.svg)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/actions/workflows/check-commits.yml)
+[![Open Issues](https://img.shields.io/github/issues/SEFall24-Team61/campus-job-review-system)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/issues)
+[![Closed Issues](https://img.shields.io/github/issues-closed/SEFall24-Team61/campus-job-review-system?color=brightgreen)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/issues?q=is%3Aissue+is%3Aclosed)
+[![Pull Requests](https://img.shields.io/github/issues-pr/SEFall24-Team61/campus-job-review-system)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/pulls)
+[![Commit Metrics] (https://img.shields.io/badge/metrics-commit-yellow?style=plastic&color=blue&link=https%3A%2F%2Fgithub.com%2FSoftware-Engineering-Spring-2025%2Fcampus-job-review-system%2Fgraphs%2Fcommit-activity)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/graphs/commit-activity)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![linting: flake8](https://img.shields.io/badge/linting-flake8-yellowgreen)](https://flake8.pycqa.org/en/latest/)
 
