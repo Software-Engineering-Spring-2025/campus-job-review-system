@@ -128,6 +128,32 @@ def test_logout_without_login(client): #test 5
     assert b"You need to be logged in" in response.data    
 
 
+def test_home_page_loads(client): #test 6
+    response = client.get('/')
+    assert response.status_code == 200
+    assert b"NC State Campus Jobs" in response.data
+    
+    
+def test_login_and_access_account(client, login_user): #test 7
+    response = client.get('/account', follow_redirects=True)
+    assert response.status_code == 200
+    assert b"Account" in response.data
+
+
+def test_account_access_unauthenticated(client): #test 8
+    response = client.get('/account', follow_redirects=True)
+    assert response.status_code == 200
+    assert b"login" in response.data.lower()
+
+def test_create_review_unauthorized(client): #test 9
+    response = client.post('/review/new', data={'review': 'This is a great job!'}, follow_redirects=True)
+    assert b"Please log in to access this page" in response.data
+
+def test_apply_job_without_login(client): # task 10
+    response = client.post('/apply/1', data={'reason': 'Interested'}, follow_redirects=True)
+    assert b"Please log in to access this page" in response.data
+
+
 
 
 
