@@ -9,6 +9,8 @@ from flask import url_for
 from flask_login import login_user, current_user
 import ollama
 from ollama import ChatResponse, chat
+import io
+import sqlite3
 
 @pytest.fixture
 def client():
