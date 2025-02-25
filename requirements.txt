@@ -20,4 +20,4 @@ db-sqlite3
 ollama
 pdfquery
 PyPDF2
-pytest-mocker
+pytest-mock
