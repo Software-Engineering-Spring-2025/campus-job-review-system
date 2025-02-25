@@ -8,7 +8,7 @@
 [![Build main](https://github.com/SEFall24-Team61/campus-job-review-system/actions/workflows/check-commits.yml/badge.svg)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/actions/workflows/check-commits.yml)
 [![Open Issues](https://img.shields.io/github/issues/Software-Engineering-Spring-2025/campus-job-review-system)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/issues)
 [![Closed Issues](https://img.shields.io/github/issues-closed/Software-Engineering-Spring-2025/campus-job-review-system?color=brightgreen)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/issues?q=is%3Aissue+is%3Aclosed)
-[![Pull Requests](https://img.shields.io/github/issues-pr/Software-Engineering-Spring-2025/campus-job-review-system)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/pulls)
+[![Pull Requests](https://img.shields.io/github/issues-pr-closed/Software-Engineering-Spring-2025/campus-job-review-system)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/pulls)
 [![Commit Metrics](https://img.shields.io/badge/metrics-commit-yellow?style=plastic&color=blue&link=https%3A%2F%2Fgithub.com%2FSoftware-Engineering-Spring-2025%2Fcampus-job-review-system%2Fgraphs%2Fcommit-activity)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/graphs/commit-activity)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![linting: flake8](https://img.shields.io/badge/linting-flake8-yellowgreen)](https://flake8.pycqa.org/en/latest/)
