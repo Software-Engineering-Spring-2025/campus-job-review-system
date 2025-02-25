@@ -149,11 +149,43 @@ def test_create_review_unauthorized(client): #test 9
     response = client.post('/review/new', data={'review': 'This is a great job!'}, follow_redirects=True)
     assert b"Please log in to access this page" in response.data
 
-def test_apply_job_without_login(client): # task 10
-    response = client.post('/apply/1', data={'reason': 'Interested'}, follow_redirects=True)
+def test_get_job_applications(client, login_user): # task 10
+    response = client.get(f'/recruiter/1/applications', follow_redirects=True)
+    assert response.status_code == 200
+
+
+def test_job_postings_page_unauthorized(client): # task 11
+    """Test job postings page for an unauthenticated user."""
+    response = client.get('/recruiter_postings', follow_redirects=True)
+
+    assert response.status_code == 200
     assert b"Please log in to access this page" in response.data
 
+def test_account_access_after_logout(client, login_user): # task 12
+    """Ensure users cannot access the account page after logging out."""
+    client.get('/logout', follow_redirects=True)
+    response = client.get('/account', follow_redirects=True)
 
+    assert response.status_code == 200
+    assert b"Please log in" in response.data
+
+def test_edit_review_without_login(client): # task 13
+    """Ensure users cannot edit a review without logging in."""
+    response = client.get('/review/1/update', follow_redirects=True)
+    assert response.status_code == 200  # Redirects to login
+    assert b"Please log in to access this page" in response.data
+
+def test_view_jobs_unauthenticated(client): # task 14
+    """Ensure unauthenticated users cannot access job postings."""
+    response = client.get('/recruiter_postings', follow_redirects=True)
+    assert response.status_code == 200
+    assert b'Please log in to access this page' in response.data
+
+def test_view_other_user_account(client, login_user): # task 15
+    """Ensure users cannot access other users' account pages."""
+    response = client.get(f'/account/{login_user.id + 1}', follow_redirects=True)  
+    
+    assert response.status_code == 403 or response.status_code == 404 
 
 
 
