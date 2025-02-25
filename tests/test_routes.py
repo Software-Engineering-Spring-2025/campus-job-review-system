@@ -934,109 +934,109 @@ def test_search_candidates_unauthorized(client, login_user):
 
 # Testing the inability to get from resume_parser_we
 def test_resume_parser_we_get(client, login_user):
-    with client.session_transaction() as session:
-        session['user_id'] = login_user.id
+    # with client.session_transaction() as session:
+    #     session['user_id'] = login_user.id
 
-        response = client.get('/resume_parser_we', follow_redirects=True)
-        print(response.data.lower())
-        assert response.status_code == 405
+    response = client.get('/resume_parser_we', follow_redirects=True)
+    print(response.data.lower())
+    assert response.status_code == 405
 
 # Testing the abilityto post to resume_parser
 def test_resume_parser_post(client, login_user):
-    with client.session_transaction() as session:
-        session['user_id'] = login_user.id
+    # with client.session_transaction() as session:
+    #     session['user_id'] = login_user.id
 
-        response = client.post(
-            '/resume_parser_we',
-            data={
-                'dummy':'dummy'
-            },
-            follow_redirects=True
-        )
-        assert response.status_code == 200
+    response = client.post(
+        '/resume_parser_we',
+        data={
+            'dummy':'dummy'
+        },
+        follow_redirects=True
+    )
+    assert response.status_code == 200
 
 
 # Testing the ability to hit paths if the user is logged in
 def test_resume_parser_login(client, login_user): # this tests only get
-    with client.session_transaction() as session:
-        session['user_id'] = login_user.id
+    # with client.session_transaction() as session:
+    #     session['user_id'] = login_user.id
 
-        response = client.get('/resume_parser', follow_redirects=True)
-        assert response.status_code == 200
+    response = client.get('/resume_parser', follow_redirects=True)
+    assert response.status_code == 200
 
 def test_resume_parser_we_login(client, login_user):
-    with client.session_transaction() as session:
-        session['user_id'] = login_user.id
+    # with client.session_transaction() as session:
+    #     session['user_id'] = login_user.id
 
-        response = client.post(
-            '/resume_parser_we',
-            data={
-                'dummy':'dummy'
-            },
-            follow_redirects=True
-        )
-        assert response.status_code == 200
+    response = client.post(
+        '/resume_parser_we',
+        data={
+            'dummy':'dummy'
+        },
+        follow_redirects=True
+    )
+    assert response.status_code == 200
 
 # Test the response if no file is attached in either case 
 def test_resume_parser_nofile_login(client, login_user): # this tests only get
-    with client.session_transaction() as session:
-        session['_user_id'] = login_user.id
+    # with client.session_transaction() as session:
+    #     session['_user_id'] = login_user.id
 
-        response = client.post('/resume_parser', data={}, follow_redirects=True)
-        
-        print(response.status_code, response.headers.get("Location"))
-        
-        #print(response.json)
-        assert b'failed' in response.data.lower()
+    response = client.post('/resume_parser', data={}, follow_redirects=True)
+    
+    print(response.status_code, response.headers.get("Location"))
+    
+    #print(response.json)
+    assert b'failed' in response.data.lower()
 
 def test_resume_parser_we_nofile_login(client, login_user):
-    with client.session_transaction() as session:
-        session['user_id'] = login_user.id
+    # with client.session_transaction() as session:
+    #     session['user_id'] = login_user.id
 
-        response = client.post('/resume_parser_we',data={},follow_redirects=True)
-        
+    response = client.post('/resume_parser_we',data={},follow_redirects=True)
+    
 
-        assert b'failed' in response.data.lower()
+    assert b'failed' in response.data.lower()
 
 # Test the response if a file is attached in either case
 def test_resume_parser_file_login(client, login_user): # this tests only get
-    with client.session_transaction() as session:
-        session['user_id'] = login_user.id
+    # with client.session_transaction() as session:
+    #     session['user_id'] = login_user.id
 
         # get the pdf here
         # add pass the fileobject in data
-        with open('./tests/test_data/test_resume.pdf', 'rb') as f:
-            response = client.post('/resume_parser',data={'file': f},follow_redirects=True)
+    with open('./tests/test_data/test_resume.pdf', 'rb') as f:
+        response = client.post('/resume_parser',data={'file': f},follow_redirects=True)
 
-        print(response)
-        assert b'<think>' in response.data.lower()
+    print(response)
+    assert b'<think>' in response.data.lower()
 
 def test_resume_parser_we_file_login(client, login_user):
-    with client.session_transaction() as session:
-        session['user_id'] = login_user.id
+    # with client.session_transaction() as session:
+    #     session['user_id'] = login_user.id
 
         # get the pdf here
         # add pass the fileobject in data
-        with open('./tests/test_data/test_resume.pdf', 'rb') as f:
-            response = client.post('/resume_parser_we',data={'file': f},follow_redirects=True)
+    with open('./tests/test_data/test_resume.pdf', 'rb') as f:
+        response = client.post('/resume_parser_we',data={'file': f},follow_redirects=True)
 
-            assert b'job_title' in response.data.lower()
+        assert b'job_title' in response.data.lower()
 
 # Test the response if a file is attached in either case
 def test_resume_parser_we_db(client, login_user): # this tests only get
-     with client.session_transaction() as session:
-        session['user_id'] = login_user.id
+    #  with client.session_transaction() as session:
+    #     session['user_id'] = login_user.id
 
         # get the pdf here
         # add pass the fileobject in data
-        with open('./tests/test_data/test_resume.pdf', 'rb') as f:
-            response = client.post('/resume_parser_we',data={'file': f},follow_redirects=True)
-            con = sqlite3.connect("./app/app.db")
-            cur = con.cursor()
-            res = cur.execute("SELECT id FROM job_experience").fetchall()
-            print(res)
-            # query db and check if work experience is added
-            assert b'failed' in response.data.lower()
+    with open('./tests/test_data/test_resume.pdf', 'rb') as f:
+        response = client.post('/resume_parser_we',data={'file': f},follow_redirects=True)
+        con = sqlite3.connect("./app/app.db")
+        cur = con.cursor()
+        res = cur.execute("SELECT id FROM job_experience").fetchall()
+        print(res)
+        # query db and check if work experience is added
+        assert b'failed' in response.data.lower()
         
 
 # Test whether ollama is working as expected
@@ -1061,42 +1061,42 @@ def test_ollama_reasoning():
 
 # Testing whether passing other file types works
 def test_resume_parser_other_filetype(client, login_user):
-    with client.session_transaction() as session:
-        session['user_id'] = login_user.id
+    # with client.session_transaction() as session:
+    #     session['user_id'] = login_user.id
 
         # get other file type file here here
         # add pass the fileobject in data
-        with open('requirements.txt', 'rb') as f:
-            response = client.post('/resume_parser',data={'file': f},follow_redirects=True)
+    with open('requirements.txt', 'rb') as f:
+        response = client.post('/resume_parser',data={'file': f},follow_redirects=True)
 
-        assert b'failed' in response.data.lower()
+    assert b'failed' in response.data.lower()
 
 def test_resume_parser_we_other_filetype(client, login_user):
-    with client.session_transaction() as session:
-        session['user_id'] = login_user.id
+    # with client.session_transaction() as session:
+    #     session['user_id'] = login_user.id
 
         # get other file type file here here
         # add pass the fileobject in data
-        with open('requirements.txt', 'rb') as f:
-            response = client.post('/resume_parser_we',data={'file': f},follow_redirects=True)
-            
-        assert b'failed' in response.data.lower()
+    with open('requirements.txt', 'rb') as f:
+        response = client.post('/resume_parser_we',data={'file': f},follow_redirects=True)
+        
+    assert b'failed' in response.data.lower()
 
 # Testing empty resume here
 def test_resume_parser_empty_resume(client, login_user):
-    with client.session_transaction() as session:
-        session['user_id'] = login_user.id
+    # with client.session_transaction() as session:
+    #     session['user_id'] = login_user.id
 
         # get empty pdf here
         # add pass the fileobject in data
-        with open('./tests/test_data/test_empty.pdf', 'rb') as f:
-            response = client.post('/resume_parser_we',data={'file': f},follow_redirects=True)
+    with open('./tests/test_data/test_empty.pdf', 'rb') as f:
+        response = client.post('/resume_parser_we',data={'file': f},follow_redirects=True)
 
-        assert b'failed' in response.data.lower()
+    assert b'failed' in response.data.lower()
 
 def test_resume_parser_we_empty_resume(client, login_user):
-    with client.session_transaction() as session:
-        session['user_id'] = login_user.id
+    # with client.session_transaction() as session:
+    #     session['user_id'] = login_user.id
 
         # get empty pdf here
         # add pass the fileobject in data
@@ -1107,8 +1107,8 @@ def test_resume_parser_we_empty_resume(client, login_user):
 
 # model unavailable test
 def test_resume_parser_model_unavailable(client, login_user, mocker):
-    with client.session_transaction() as session:
-        session['user_id'] = login_user.id
+    # with client.session_transaction() as session:
+    #     session['user_id'] = login_user.id
 
     # Mocking ollama.list() to return an empty model list
     mocker.patch('ollama.list', return_value={'models': []})
@@ -1119,8 +1119,8 @@ def test_resume_parser_model_unavailable(client, login_user, mocker):
 
 # model unavailable test in resume_parser_we
 def test_resume_parser_model_we_unavailable(client, login_user, mocker):
-    with client.session_transaction() as session:
-        session['user_id'] = login_user.id
+    # with client.session_transaction() as session:
+    #     session['user_id'] = login_user.id
 
     # Mocking ollama.list() to return an empty model list
     mocker.patch('ollama.list', return_value={'models': []})
@@ -1131,8 +1131,8 @@ def test_resume_parser_model_we_unavailable(client, login_user, mocker):
 
 # testing corrupted pdf
 def test_resume_parser_corrupt_pdf(client, login_user):
-    with client.session_transaction() as session:
-        session['user_id'] = login_user.id
+    # with client.session_transaction() as session:
+    #     session['user_id'] = login_user.id
 
     corrupt_pdf_content = b'%PDF-1.4\n%corrupted-data'
     response = client.post('/resume_parser', data={'file': (io.BytesIO(corrupt_pdf_content), 'corrupt.pdf')}, follow_redirects=True)
@@ -1143,8 +1143,8 @@ def test_resume_parser_we_malformed_json(client, login_user, mocker):
     mock_response = '{invalid_json_response}'  # Simulate incorrect JSON
     mocker.patch('ollama.chat', return_value=type('Response', (), {"message": type('Message', (), {"content": mock_response})}))
 
-    with client.session_transaction() as session:
-        session['user_id'] = login_user.id
+    # with client.session_transaction() as session:
+    #     session['user_id'] = login_user.id
 
     with open('./tests/test_data/test_resume.pdf', 'rb') as f:
         response = client.post('/resume_parser_we', data={'file': f}, follow_redirects=True)
@@ -1156,8 +1156,8 @@ def test_resume_parser_non_resume(client, login_user, mocker):
     #mock_response = '{invalid_json_response}'  # Simulate incorrect JSON
     #mocker.patch('chat', return_value=type('Response', (), {"message": type('Message', (), {"content": mock_response})}))
 
-    with client.session_transaction() as session:
-        session['user_id'] = login_user.id
+    # with client.session_transaction() as session:
+    #     session['user_id'] = login_user.id
 
     with open('./tests/test_data/Assignment2-Description.pdf', 'rb') as f:
         response = client.post('/resume_parser', data={'file': f}, follow_redirects=True)
