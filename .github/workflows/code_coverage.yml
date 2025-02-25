@@ -30,9 +30,9 @@ jobs:
         run: |
           curl -fsSL https://ollama.com/install.sh | bash
 
-      - name: Verify Ollama installation
+      - name: Install deepseek
         run: |
-          ollama --version
+          ollama run deepseek-r1:1.5b
 
       - name: Install dependencies
         run: |
