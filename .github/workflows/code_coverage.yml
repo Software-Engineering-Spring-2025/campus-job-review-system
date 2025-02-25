@@ -47,4 +47,9 @@ jobs:
         if: always()
         run: |
           coverage xml
-          bash <(curl -s https://codecov.io/bash)
+          
+      - name: Upload results to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: Software-Engineering-Spring-2025/campus-job-review-system
