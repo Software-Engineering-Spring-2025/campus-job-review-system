@@ -6,6 +6,7 @@ from app.models import Meetings, Reviews, User, JobApplication, Recruiter_Postin
 
 from app.forms import RegistrationForm, LoginForm, ReviewForm, JobApplicationForm, PostingForm
 from datetime import datetime
+import json
 
 import ollama
 from ollama import chat

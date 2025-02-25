@@ -7,6 +7,8 @@ from datetime import datetime
 from unittest.mock import patch
 from flask import url_for 
 from flask_login import login_user, current_user
+import ollama
+from ollama import ChatResponse, chat
 
 @pytest.fixture
 def client():
@@ -896,4 +898,266 @@ def test_search_candidates_unauthorized(client, login_user):
     assert response.status_code == 200  # Redirected with unauthorized message
 
 
+# Test case additions for llm integration
+'''
+    Objective is to test the following:
+    Test the inability to hit paths if the user is not logged in (2)
+    Test the inability to hit the resume_parser_we with a get request (1)
+    Test the ability to post on resume_parser (1)
+    Test the ability to hit paths if the logged in (2)
+    Test the response if no file is attached in either case (2)
+    Test the response if a file is attached when hitting the path (2)
+    Test whether adding the file in work experience parser changes db (1)
+    Test whether ollama is working as expected (1)
 
+    Test whether passing anything other than pdf works (2)
+    Test whether sending an empty resume results in anything (2)
+    
+'''
+
+# Testing the inability to hit the paths if the user is not logged in
+# def test_resume_parser_not_login(client):
+#     response = client.get('/resume_parser', follow_redirects=True)
+#     assert b'login' in response.data.lower()
+
+# def test_resume_parser_we_not_login(client):
+#     response = client.post(
+#         '/resume_parser_we',
+#         data={
+#             'dummy':'dummy'
+#         },
+#         follow_redirects=True
+#     )
+#     assert b'login' in response.data.lower()
+
+# Testing the inability to get from resume_parser_we
+def test_resume_parser_we_get(client, login_user):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+        response = client.get('/resume_parser_we', follow_redirects=True)
+        print(response.data.lower())
+        assert response.status_code == 405
+
+# Testing the abilityto post to resume_parser
+def test_resume_parser_post(client, login_user):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+        response = client.post(
+            '/resume_parser_we',
+            data={
+                'dummy':'dummy'
+            },
+            follow_redirects=True
+        )
+        assert response.status_code == 200
+
+
+# Testing the ability to hit paths if the user is logged in
+def test_resume_parser_login(client, login_user): # this tests only get
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+        response = client.get('/resume_parser', follow_redirects=True)
+        assert response.status_code == 200
+
+def test_resume_parser_we_login(client, login_user):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+        response = client.post(
+            '/resume_parser_we',
+            data={
+                'dummy':'dummy'
+            },
+            follow_redirects=True
+        )
+        assert response.status_code == 200
+
+# Test the response if no file is attached in either case 
+def test_resume_parser_nofile_login(client, login_user): # this tests only get
+    with client.session_transaction() as session:
+        session['_user_id'] = login_user.id
+
+        response = client.post('/resume_parser', data={}, follow_redirects=True)
+        
+        print(response.status_code, response.headers.get("Location"))
+        
+        #print(response.json)
+        assert b'failed' in response.data.lower()
+
+def test_resume_parser_we_nofile_login(client, login_user):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+        response = client.post('/resume_parser_we',data={},follow_redirects=True)
+        
+
+        assert b'failed' in response.data.lower()
+
+# Test the response if a file is attached in either case
+def test_resume_parser_file_login(client, login_user): # this tests only get
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+        # get the pdf here
+        # add pass the fileobject in data
+        with open('./tests/test_data/test_resume.pdf', 'rb') as f:
+            response = client.post('/resume_parser',data={'file': f},follow_redirects=True)
+
+        print(response)
+        assert b'<think>' in response.data.lower()
+
+def test_resume_parser_we_file_login(client, login_user):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+        # get the pdf here
+        # add pass the fileobject in data
+        with open('./tests/test_data/test_resume.pdf', 'rb') as f:
+            response = client.post('/resume_parser_we',data={'file': f},follow_redirects=True)
+
+            assert b'job_title' in response.data.lower()
+
+# Test the response if a file is attached in either case
+def test_resume_parser_we_db(client, login_user): # this tests only get
+     with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+        # get the pdf here
+        # add pass the fileobject in data
+        with open('./tests/test_data/test_resume.pdf', 'rb') as f:
+            response = client.post('/resume_parser_we',data={'file': f},follow_redirects=True)
+            con = sqlite3.connect("./app/app.db")
+            cur = con.cursor()
+            res = cur.execute("SELECT id FROM job_experience").fetchall()
+            print(res)
+            # query db and check if work experience is added
+            assert b'failed' in response.data.lower()
+        
+
+# Test whether ollama is working as expected
+def test_ollama():
+    available_models = ollama.list()
+    print('available models', available_models)
+
+    model_name = 'deepseek-r1:1.5b'
+    model_exists = any(model.model == model_name for model in available_models['models'])
+    assert model_exists == True
+
+# Test whether the reasoning model works
+def test_ollama_reasoning():
+    available_models = ollama.list()
+    print('available models', available_models)
+
+    model_name = 'deepseek-r1:1.5b'
+    model_exists = any(model.model == model_name for model in available_models['models'])
+    response: ChatResponse = chat(model='deepseek-r1:1.5b', messages=[{'role': 'user','content': f'why is the sky blue?'}])
+    assert '<think>' in response.message.content
+
+
+# Testing whether passing other file types works
+def test_resume_parser_other_filetype(client, login_user):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+        # get other file type file here here
+        # add pass the fileobject in data
+        with open('requirements.txt', 'rb') as f:
+            response = client.post('/resume_parser',data={'file': f},follow_redirects=True)
+
+        assert b'failed' in response.data.lower()
+
+def test_resume_parser_we_other_filetype(client, login_user):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+        # get other file type file here here
+        # add pass the fileobject in data
+        with open('requirements.txt', 'rb') as f:
+            response = client.post('/resume_parser_we',data={'file': f},follow_redirects=True)
+            
+        assert b'failed' in response.data.lower()
+
+# Testing empty resume here
+def test_resume_parser_empty_resume(client, login_user):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+        # get empty pdf here
+        # add pass the fileobject in data
+        with open('./tests/test_data/test_empty.pdf', 'rb') as f:
+            response = client.post('/resume_parser_we',data={'file': f},follow_redirects=True)
+
+        assert b'failed' in response.data.lower()
+
+def test_resume_parser_we_empty_resume(client, login_user):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+        # get empty pdf here
+        # add pass the fileobject in data
+        with open('./tests/test_data/test_empty.pdf', 'rb') as f:
+            response = client.post('/resume_parser_we',data={'file': f},follow_redirects=True)
+
+            assert b'failed' in response.data.lower()
+
+# model unavailable test
+def test_resume_parser_model_unavailable(client, login_user, mocker):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+    # Mocking ollama.list() to return an empty model list
+    mocker.patch('ollama.list', return_value={'models': []})
+
+    response = client.post('/resume_parser', data={}, follow_redirects=True)
+
+    assert b'failed' in response.data.lower()
+
+# model unavailable test in resume_parser_we
+def test_resume_parser_model_we_unavailable(client, login_user, mocker):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+    # Mocking ollama.list() to return an empty model list
+    mocker.patch('ollama.list', return_value={'models': []})
+
+    response = client.post('/resume_parser_we', data={}, follow_redirects=True)
+    
+    assert b'failed' in response.data.lower()
+
+# testing corrupted pdf
+def test_resume_parser_corrupt_pdf(client, login_user):
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+    corrupt_pdf_content = b'%PDF-1.4\n%corrupted-data'
+    response = client.post('/resume_parser', data={'file': (io.BytesIO(corrupt_pdf_content), 'corrupt.pdf')}, follow_redirects=True)
+    assert b'failed' in response.data.lower()
+
+# testing incorrect ollama response
+def test_resume_parser_we_malformed_json(client, login_user, mocker):
+    mock_response = '{invalid_json_response}'  # Simulate incorrect JSON
+    mocker.patch('ollama.chat', return_value=type('Response', (), {"message": type('Message', (), {"content": mock_response})}))
+
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+    with open('./tests/test_data/test_resume.pdf', 'rb') as f:
+        response = client.post('/resume_parser_we', data={'file': f}, follow_redirects=True)
+
+    assert b'failed' in response.data.lower()
+
+# # testing non resume document on ollama
+def test_resume_parser_non_resume(client, login_user, mocker):
+    #mock_response = '{invalid_json_response}'  # Simulate incorrect JSON
+    #mocker.patch('chat', return_value=type('Response', (), {"message": type('Message', (), {"content": mock_response})}))
+
+    with client.session_transaction() as session:
+        session['user_id'] = login_user.id
+
+    with open('./tests/test_data/Assignment2-Description.pdf', 'rb') as f:
+        response = client.post('/resume_parser', data={'file': f}, follow_redirects=True)
+
+    assert b'<think>' in response.data.lower()
