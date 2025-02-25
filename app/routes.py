@@ -97,30 +97,45 @@ def serve_resume(path):
     user = current_user
     directory = app.config['UPLOAD_FOLDER']
     return send_from_directory(directory, path)
-    
+
 # #####################################
 # #####################################
 
-@app.route("/register", methods=["GET", "POST"])
+# @app.route("/register", methods=["GET", "POST"])
+# def register():
+#     if current_user.is_authenticated:
+#         return redirect(url_for("home"))
+#     form = RegistrationForm()
+#     if form.validate_on_submit():
+#         hashed_password = bcrypt.generate_password_hash(form.password.data).decode(
+#             "utf-8"
+#         )
+#         user = User(
+#             username=form.username.data, email=form.email.data, password=hashed_password, is_recruiter=form.signup_as_recruiter.data
+#         )
+#         db.session.add(user)
+#         db.session.commit()
+#         flash(
+#             "Account created successfully! Please log in with your credentials.",
+#             "success",
+#         )
+#         return redirect(url_for("login"))
+#     return render_template("register.html", title="Register", form=form)
+@app.route("/register", methods=["POST"])
 def register():
-    if current_user.is_authenticated:
-        return redirect(url_for("home"))
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode(
-            "utf-8"
-        )
-        user = User(
-            username=form.username.data, email=form.email.data, password=hashed_password, is_recruiter=form.signup_as_recruiter.data
-        )
-        db.session.add(user)
-        db.session.commit()
-        flash(
-            "Account created successfully! Please log in with your credentials.",
-            "success",
-        )
-        return redirect(url_for("login"))
-    return render_template("register.html", title="Register", form=form)
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    existing_user = User.query.filter_by(email=email).first()
+    if existing_user:
+        flash("Email already exists", "danger")
+        return render_template("register.html"), 400  # Return 400 Bad Request
+
+    new_user = User(email=email, password=generate_password_hash(password))
+    db.session.add(new_user)
+    db.session.commit()
+
+    return redirect(url_for("login"))
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -141,10 +156,19 @@ def login():
     return render_template("login.html", title="Login", form=form)
 
 
+# @app.route("/logout")
+# def logout():
+#     logout_user()
+#     flash("Logged out successfully!", "success")
+#     return redirect(url_for("home"))
 @app.route("/logout")
 def logout():
+    if not current_user.is_authenticated:
+        flash("You need to be logged in", "warning")
+        return redirect(url_for("login"))
+
     logout_user()
-    flash("Logged out successfully!", "success")
+    flash("You have been logged out", "success")
     return redirect(url_for("home"))
 
 
@@ -961,3 +985,67 @@ def search_candidates():
 
     return render_template('search_candidates.html', job_experiences=job_experiences)
 
+@app.route("/download_resume/<int:user_id>", methods=["GET"])
+@login_required
+def download_resume(user_id):
+    """Allow users to download their uploaded resume."""
+    user = User.query.get_or_404(user_id)
+    
+    if not user.resume_path:
+        flash("Resume not found for this user.", "danger")
+        return redirect(url_for("account"))
+
+    return send_from_directory(
+        directory=os.path.dirname(user.resume_path),
+        path=os.path.basename(user.resume_path),
+        as_attachment=True,
+    )
+@app.route("/upload_resume", methods=["POST"])
+@login_required
+def upload_resume():
+    if 'resume' not in request.files:
+        flash("No file part", "danger")
+        return redirect(url_for("account"))
+
+    file = request.files['resume']
+    if file.filename == '':
+        flash("No selected file", "danger")
+        return redirect(url_for("account"))
+
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+        file.save(filepath)
+
+        current_user.resume_path = filepath
+        db.session.commit()
+
+        flash("Resume uploaded successfully!", "success")
+        return redirect(url_for("account"))
+
+    flash("Invalid file type!", "danger")
+    return redirect(url_for("account"))
+
+@app.route("/profile", methods=["POST"])
+@login_required
+def profile():
+    username = request.form.get("username")
+
+    if len(username) < 2:
+        flash("Username must be at least 2 characters long", "danger")
+        return render_template("profile.html"), 400  
+
+    existing_user = User.query.filter_by(username=username).first()
+    if existing_user:
+        flash("Username already taken", "danger")
+        return render_template("profile.html"), 409  
+
+    if ";" in username or "DROP" in username:
+        flash("Invalid characters in username", "danger")
+        return render_template("profile.html"), 400  
+
+    current_user.username = username
+    db.session.commit()
+
+    flash("Profile updated successfully!", "success")
+    return redirect(url_for("profile"))

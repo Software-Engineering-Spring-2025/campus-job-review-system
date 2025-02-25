@@ -40,7 +40,7 @@ login_manager.login_message_category = "info"
 migrate = Migrate(app, db, render_as_batch=True)
 
 first_request = True  # Flag to track the first request
-@app.before_first_request
+@app.before_request
 def create_table():
     global first_request
     if first_request:
