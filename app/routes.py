@@ -29,7 +29,7 @@ from werkzeug.utils import secure_filename  # NEW
 def extract_text_from_pdf(pdf_path):
     """Extract text from a PDF file."""
     text = ""
-    with file.open(pdf_path) as doc:
+    with open(pdf_path) as doc:
         for page in doc:
             text += page.get_text("text") + "\n"  # Extract text from each page
     return text if text.strip() else "No text found in the PDF."
