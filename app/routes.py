@@ -131,7 +131,7 @@ def register():
         flash("Email already exists", "danger")
         return render_template("register.html"), 400  # Return 400 Bad Request
 
-    new_user = User(email=email, password=generate_password_hash(password))
+    new_user = User(email=email, password = bcrypt.generate_password_hash(password))
     db.session.add(new_user)
     db.session.commit()
 
