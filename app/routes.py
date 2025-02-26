@@ -99,41 +99,44 @@ def serve_resume(path):
 # #####################################
 # #####################################
 
-# @app.route("/register", methods=["GET", "POST"])
-# def register():
-#     if current_user.is_authenticated:
-#         return redirect(url_for("home"))
-#     form = RegistrationForm()
-#     if form.validate_on_submit():
-#         hashed_password = bcrypt.generate_password_hash(form.password.data).decode(
-#             "utf-8"
-#         )
-#         user = User(
-#             username=form.username.data, email=form.email.data, password=hashed_password, is_recruiter=form.signup_as_recruiter.data
-#         )
-#         db.session.add(user)
-#         db.session.commit()
-#         flash(
-#             "Account created successfully! Please log in with your credentials.",
-#             "success",
-#         )
-#         return redirect(url_for("login"))
-#     return render_template("register.html", title="Register", form=form)
-@app.route("/register", methods=["POST"])
+#@app.route("/register", methods=["GET"])
+#def register():
+
+@app.route("/register", methods=["POST", "GET"])
 def register():
-    email = request.form.get("email")
-    password = request.form.get("password")
+    if request.method == "GET":
+        if current_user.is_authenticated:
+            return redirect(url_for("home"))
+        form = RegistrationForm()
+        if form.validate_on_submit():
+            hashed_password = bcrypt.generate_password_hash(form.password.data).decode(
+                "utf-8"
+            )
+            user = User(
+                username=form.username.data, email=form.email.data, password=hashed_password, is_recruiter=form.signup_as_recruiter.data
+            )
+            db.session.add(user)
+            db.session.commit()
+            flash(
+                "Account created successfully! Please log in with your credentials.",
+                "success",
+            )
+            return redirect(url_for("login"))
+        return render_template("register.html", title="Register", form=form)
+    else:
+        email = request.form.get("email")
+        password = request.form.get("password")
 
-    existing_user = User.query.filter_by(email=email).first()
-    if existing_user:
-        flash("Email already exists", "danger")
-        return render_template("register.html"), 400  # Return 400 Bad Request
+        existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
+            flash("Email already exists", "danger")
+            return render_template("register.html"), 400  # Return 400 Bad Request
 
-    new_user = User(email=email, password = bcrypt.generate_password_hash(password))
-    db.session.add(new_user)
-    db.session.commit()
+        new_user = User(email=email, password = bcrypt.generate_password_hash(password))
+        db.session.add(new_user)
+        db.session.commit()
 
-    return redirect(url_for("login"))
+        return redirect(url_for("login"))
 
 
 @app.route("/login", methods=["GET", "POST"])
