@@ -36,6 +36,7 @@ Finding a job on campus can be overwhelming. Students often rely on word-of-mout
 - **Job Application Tracker:** Add job links, application dates, and current statuses to track all your applications in one place and stay organized during your job search.
 - **Recruiter Login:** Recruiters have a separate login to manage job postings, including adding, viewing, and deleting listings, ensuring a smooth hiring process.
 - **Candidate Job Applications:** Candidates can view available job postings and apply directly through the platform, while recruiters can access a dedicated section to review applicants.
+- **Resume Upload:** Candidates can upload their upload their resumes which automatically get sent to the recruiter when the applicant applies to the recruiters' isting.
 - **Job Experience Sharing:** Candidates can add details about their job experiences, helping peers make informed decisions with real-world insights.
 - **Interview Scheduling:** Recruiters can schedule interviews with candidates directly through the platform, providing updates that candidates can view and manage.
 - **Resume Suggestions:** Candidates can get suggestions about how good their resume is.
