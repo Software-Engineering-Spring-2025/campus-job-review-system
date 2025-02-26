@@ -4,7 +4,7 @@
 [![DOI](https://zenodo.org/badge/936870298.svg)](https://doi.org/10.5281/zenodo.14927099)
 [![License](https://img.shields.io/badge/license-MIT-green?link=https%3A%2F%2Fgithub.com%2FSoftware-Engineering-Spring-2025%2Fcampus-job-review-system%2Fblob%2Fmain%2FLICENSE)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/blob/main/LICENSE)
 [![GitHub Release](https://img.shields.io/badge/release-beta-blue?color=blue&link=https%3A%2F%2Fgithub.com%2FSoftware-Engineering-Spring-2025%2Fcampus-job-review-system%2Freleases%2Ftag%2FBeta)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/releases/tag/Beta)
-[![codecov](https://codecov.io/github/SEFall24-Team61/campus-job-review-system/graph/badge.svg?token=ZGE7LGPUGY)](https://codecov.io/github/SEFall24-Team61/campus-job-review-system)
+[![codecov](https://codecov.io/gh/Software-Engineering-Spring-2025/campus-job-review-system/graph/badge.svg?token=HK9DZK6HDH)](https://codecov.io/gh/Software-Engineering-Spring-2025/campus-job-review-system)
 [![Build main](https://github.com/SEFall24-Team61/campus-job-review-system/actions/workflows/check-commits.yml/badge.svg)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/actions/workflows/check-commits.yml)
 [![Open Issues](https://img.shields.io/github/issues/Software-Engineering-Spring-2025/campus-job-review-system)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/issues)
 [![Closed Issues](https://img.shields.io/github/issues-closed/Software-Engineering-Spring-2025/campus-job-review-system?color=brightgreen)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/issues?q=is%3Aissue+is%3Aclosed)
@@ -38,6 +38,8 @@ Finding a job on campus can be overwhelming. Students often rely on word-of-mout
 - **Candidate Job Applications:** Candidates can view available job postings and apply directly through the platform, while recruiters can access a dedicated section to review applicants.
 - **Job Experience Sharing:** Candidates can add details about their job experiences, helping peers make informed decisions with real-world insights.
 - **Interview Scheduling:** Recruiters can schedule interviews with candidates directly through the platform, providing updates that candidates can view and manage.
+- **Resume Suggestions:** Candidates can get suggestions about how good their resume is.
+- **Resume Parsing:** Candidates can get their resume parsed to extract work experience for convenience.
 
 
 By fostering transparency and collaboration, our platform empowers students to navigate the campus job market confidently.
@@ -80,6 +82,7 @@ Great news! Alex successfully landed a job on campus.
 <code><a href="https://developer.mozilla.org/en-US/docs/Web/CSS" target="_blank"><img height="50" src="https://cdn.pixabay.com/photo/2017/08/05/11/16/logo-2582747_1280.png"></a></code>
 <code><a href="https://www.javascript.com/" target="_blank"><img height="50" src="https://cdn.freelogovectors.net/wp-content/uploads/2020/11/javascript_logo-768x873.png"></a></code>
 <code><a href="https://www.sqlite.org/index.html" target="_blank"><img height="50" src="https://www.vectorlogo.zone/logos/sqlite/sqlite-icon.svg"></a></code>
+<code><a href="https://ollama.com/" target="_blank"><img height="50" src="https://ollama.com/public/assets/c889cc0d-cb83-4c46-a98e-0d0e273151b9/42f6b28d-9117-48cd-ac0d-44baaf5c178e.png"></a></code>
 
 
 ---
@@ -127,7 +130,7 @@ The rules listed below are to be followed by the ones who will be contributing t
 
 
 ## 📈 Code Coverage
-[![codecov](https://codecov.io/github/SEFall24-Team61/campus-job-review-system/graph/badge.svg?token=ZGE7LGPUGY)](https://codecov.io/github/SEFall24-Team61/campus-job-review-system) It is part of the [Github Workflow Build](https://github.com/SEFall24-Team61/campus-job-review-system/actions/workflows/code_coverage.yml)
+[![codecov](https://codecov.io/gh/Software-Engineering-Spring-2025/campus-job-review-system/graph/badge.svg?token=HK9DZK6HDH)](https://codecov.io/gh/Software-Engineering-Spring-2025/campus-job-review-system) It is part of the [Github Workflow Build](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/actions/runs/13535460956/workflow)
 
 ## 🌐 Future Scope
 We’re excited about the enhancements coming to the NCSU Campus Jobs Review System! Here’s what’s on the horizon:
@@ -155,7 +158,7 @@ We love hearing from you! Please open an issue or submit a pull request if you h
 
 
 ## 🙏 Special Thanks to Previous Contributors
-We extend our gratitude to the [previous contributors](https://github.com/SE-Group-95/campus-job-review-system) who helped lay the foundation for this project. Their contributions have been instrumental in making the NCSU Campus Job Review System what it is today!
+We extend our gratitude to the [previous contributors](https://github.com/SEFall24-Team61/campus-job-review-system) who helped lay the foundation for this project. Their contributions have been instrumental in making the NCSU Campus Job Review System what it is today!
 
 
 ## ⭐ Governance
