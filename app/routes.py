@@ -35,8 +35,6 @@ def extract_text_from_pdf(pdf_path):
     return text if text.strip() else "No text found in the PDF."
 
 
-
-
 app.config["SECRET_KEY"] = "5791628bb0b13ce0c676dfde280ba245"
 
 @app.route("/")
@@ -48,9 +46,9 @@ def home():
 
 # #####################################
 # #####################################
-# TRYING AGAIN FEB 23
-# Configuration for file uploads
-UPLOAD_FOLDER = '/home/runner/work/CAMPUS-JOB-REVIEW-SYSTEM_2/app/resumes'  # Create this folder in your project
+
+## editing routes for tests to work Feb 25
+UPLOAD_FOLDER = os.getcwd()+'/app/resumes'  # Create this folder in your project
 ALLOWED_EXTENSIONS = {'pdf', 'docx', 'txt'}  # Add other extensions as needed
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
