@@ -4,7 +4,7 @@
 [![DOI](https://zenodo.org/badge/936870298.svg)](https://doi.org/10.5281/zenodo.14927099)
 [![License](https://img.shields.io/badge/license-MIT-green?link=https%3A%2F%2Fgithub.com%2FSoftware-Engineering-Spring-2025%2Fcampus-job-review-system%2Fblob%2Fmain%2FLICENSE)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/blob/main/LICENSE)
 [![GitHub Release](https://img.shields.io/badge/release-beta-blue?color=blue&link=https%3A%2F%2Fgithub.com%2FSoftware-Engineering-Spring-2025%2Fcampus-job-review-system%2Freleases%2Ftag%2FBeta)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/releases/tag/Beta)
-[![codecov](https://codecov.io/github/SEFall24-Team61/campus-job-review-system/graph/badge.svg?token=ZGE7LGPUGY)](https://codecov.io/github/SEFall24-Team61/campus-job-review-system)
+[![codecov](https://codecov.io/gh/Software-Engineering-Spring-2025/campus-job-review-system/graph/badge.svg?token=HK9DZK6HDH)](https://codecov.io/gh/Software-Engineering-Spring-2025/campus-job-review-system)
 [![Build main](https://github.com/SEFall24-Team61/campus-job-review-system/actions/workflows/check-commits.yml/badge.svg)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/actions/workflows/check-commits.yml)
 [![Open Issues](https://img.shields.io/github/issues/Software-Engineering-Spring-2025/campus-job-review-system)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/issues)
 [![Closed Issues](https://img.shields.io/github/issues-closed/Software-Engineering-Spring-2025/campus-job-review-system?color=brightgreen)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/issues?q=is%3Aissue+is%3Aclosed)
@@ -125,7 +125,7 @@ The rules listed below are to be followed by the ones who will be contributing t
 
 
 ## 📈 Code Coverage
-[![codecov](https://codecov.io/github/SEFall24-Team61/campus-job-review-system/graph/badge.svg?token=ZGE7LGPUGY)](https://codecov.io/github/SEFall24-Team61/campus-job-review-system) It is part of the [Github Workflow Build](https://github.com/SEFall24-Team61/campus-job-review-system/actions/workflows/code_coverage.yml)
+[![codecov](https://codecov.io/gh/Software-Engineering-Spring-2025/campus-job-review-system/graph/badge.svg?token=HK9DZK6HDH)](https://codecov.io/gh/Software-Engineering-Spring-2025/campus-job-review-system) It is part of the [Github Workflow Build](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/actions/runs/13535460956/workflow)
 
 ## 🌐 Future Scope
 We’re excited about the enhancements coming to the NCSU Campus Jobs Review System! Here’s what’s on the horizon:
