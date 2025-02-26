@@ -2,14 +2,14 @@
 
 
 [![DOI](https://zenodo.org/badge/936870298.svg)](https://doi.org/10.5281/zenodo.14927099)
-[![License](https://img.shields.io/badge/license-MIT-green?style=plastic&link=https%3A%2F%2Fgithub.com%2FSoftware-Engineering-Spring-2025%2Fcampus-job-review-system%2Fblob%2Fmain%2FLICENSE)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/blob/main/LICENSE)
-[![GitHub Release](https://img.shields.io/badge/release-beta-blue?style=plastic&color=blue&link=https%3A%2F%2Fgithub.com%2FSoftware-Engineering-Spring-2025%2Fcampus-job-review-system%2Freleases%2Ftag%2FBeta)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/releases/tag/Beta)
+[![License](https://img.shields.io/badge/license-MIT-green?link=https%3A%2F%2Fgithub.com%2FSoftware-Engineering-Spring-2025%2Fcampus-job-review-system%2Fblob%2Fmain%2FLICENSE)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/blob/main/LICENSE)
+[![GitHub Release](https://img.shields.io/badge/release-beta-blue?color=blue&link=https%3A%2F%2Fgithub.com%2FSoftware-Engineering-Spring-2025%2Fcampus-job-review-system%2Freleases%2Ftag%2FBeta)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/releases/tag/Beta)
 [![codecov](https://codecov.io/github/SEFall24-Team61/campus-job-review-system/graph/badge.svg?token=ZGE7LGPUGY)](https://codecov.io/github/SEFall24-Team61/campus-job-review-system)
 [![Build main](https://github.com/SEFall24-Team61/campus-job-review-system/actions/workflows/check-commits.yml/badge.svg)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/actions/workflows/check-commits.yml)
-[![Open Issues](https://img.shields.io/github/issues/SEFall24-Team61/campus-job-review-system)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/issues)
-[![Closed Issues](https://img.shields.io/github/issues-closed/SEFall24-Team61/campus-job-review-system?color=brightgreen)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/issues?q=is%3Aissue+is%3Aclosed)
-[![Pull Requests](https://img.shields.io/github/issues-pr/SEFall24-Team61/campus-job-review-system)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/pulls)
-[![Commit Metrics] (https://img.shields.io/badge/metrics-commit-yellow?style=plastic&color=blue&link=https%3A%2F%2Fgithub.com%2FSoftware-Engineering-Spring-2025%2Fcampus-job-review-system%2Fgraphs%2Fcommit-activity)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/graphs/commit-activity)
+[![Open Issues](https://img.shields.io/github/issues/Software-Engineering-Spring-2025/campus-job-review-system)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/issues)
+[![Closed Issues](https://img.shields.io/github/issues-closed/Software-Engineering-Spring-2025/campus-job-review-system?color=brightgreen)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/issues?q=is%3Aissue+is%3Aclosed)
+[![Pull Requests](https://img.shields.io/github/issues-pr-closed/Software-Engineering-Spring-2025/campus-job-review-system)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/pulls)
+[![Commit Metrics](https://img.shields.io/badge/metrics-commit-yellow?style=plastic&color=blue&link=https%3A%2F%2Fgithub.com%2FSoftware-Engineering-Spring-2025%2Fcampus-job-review-system%2Fgraphs%2Fcommit-activity)](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/graphs/commit-activity)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![linting: flake8](https://img.shields.io/badge/linting-flake8-yellowgreen)](https://flake8.pycqa.org/en/latest/)
 
@@ -50,7 +50,7 @@ By fostering transparency and collaboration, our platform empowers students to n
 
 **How the Campus Job Review System Helps**:
 
-1. **Search for Reviews**: Alex uses the platform to search for “campus library” and quickly finds multiple reviews detailing work conditions, flexibility, and overall job satisfaction.
+1. **Search for Reviews**: Alex uses the platform to search for campus library and quickly finds multiple reviews detailing work conditions, flexibility, and overall job satisfaction.
 
 2. **Read Feedback**: He reads honest and detailed feedback from current and former student employees, giving him insights into the work culture and expected responsibilities.
 
@@ -60,7 +60,9 @@ By fostering transparency and collaboration, our platform empowers students to n
 
 5. **Track Job Applications:** Students can track their applications and update the status accordingly.
 
-This is just one example of how our system can help students like Alex navigate their campus job search effectively!
+This is just one example of how our system can help students like Alex navigate their campus job search effectively! 
+
+Great news! Alex successfully landed a job on campus. 
 
 ---
 
@@ -129,31 +131,42 @@ The rules listed below are to be followed by the ones who will be contributing t
 
 ## 🌐 Future Scope
 We’re excited about the enhancements coming to the NCSU Campus Jobs Review System! Here’s what’s on the horizon:
-- **Skill Assessment Tests:** Introduce integrated assessments to help candidates showcase their abilities to recruiters directly through the platform.
-- **Peer Networking:** Add a networking feature where students can connect, share advice, and collaborate on career development.
-- **Review Validation System:** Implement a system to verify and validate job reviews, ensuring authenticity and reliability for users.
-- **AI-Powered Job Recommendations:** Implement AI to suggest relevant job opportunities to candidates based on their profile, skills, and application history.
+- Genearate email notifications when a decision is made on  a student's application, when a relevant job opportunity is posted, or for the manager when a student applies to his or her listing
+- Enable two-factor authentication to strengthen the security of the application
+- Anonymous review setting to encourage more honest feedback
+- Output a percentage match for the current posting based on the applicant's parsed resume
 
 
 ## 🙌 Contributors
 A heartfelt thank you to our contributors who made this project possible:
 
-- [Shruti Dhond](https://github.com/shrutid02)
-- [Pranav Manbhekar](https://github.com/pranavman11)
-- [Shardul Khare](https://github.com/LuDraa)
+- [Srinivas Vasudevan](svasude7@ncsu.edu)
+- [Jill Marley](jahmad5@ncsu.edu)
+- [Saamyar Alizadeh](salizade@ncsu.edu)
 
+"Our website and documentation clearly state the copyright owners of the software and its associated materials."
 
 ## 🙏 Acknowledgements
 We would like to thank Professor Dr. Timothy Menzies for helping us understand the process of building a good Software Engineering project. We would also like to thank the teaching assistants for their support throughout the project.
 
 
 ## 💡 Feedback
-We love hearing from you! Please open an issue or submit a pull request if you have suggestions for improvements or new features. Your feedback helps us grow!
+We love hearing from you! Please open an issue or submit a pull request if you have suggestions for improvements or new features. Your feedback helps us grow! Please reach out to us via email, which we linked above.
 
 
 ## 🙏 Special Thanks to Previous Contributors
 We extend our gratitude to the [previous contributors](https://github.com/SE-Group-95/campus-job-review-system) who helped lay the foundation for this project. Their contributions have been instrumental in making the NCSU Campus Job Review System what it is today!
 
 
+## ⭐ Governance
+Please don't push any changes without permission of the contributors. Email for details.  
+
+## 👀 For our users
+- We currently have 4 projects and 10 users associated with our project.
+- For help, please contact (svasude7@ncsu.edu), (jahmad5@ncsu.edu), or (salizade@ncsu.edu); we will get back to you within 5 to 7 business days. 
+
 ## ⚠️ Disclaimer
 The NCSU Campus Job Review System dynamically retrieves job vacancies from the official [NC State Campus Enterprises website](https://campusenterprises.ncsu.edu/dept/hr/opportunities/student/jobs/). We do not own or manage this data; instead, our system serves as an interface to make job listings more accessible to NC State students by aggregating real-time job opportunities for convenient browsing. All job data is the property of NC State University Campus Enterprises, and any changes or updates to job listings on their website will be reflected here accordingly.
+
+## 📘 Recommended Citation
+Marley, J., Vasudevan, S., & Alizadeh, S. (2025). Campus Job Review System [Computer software]. Retrieved from https://github.com/jillahmad17/campus-job-review-system
