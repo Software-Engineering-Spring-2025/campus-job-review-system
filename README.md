@@ -116,10 +116,10 @@ Choose Your Installation Method (with Docker or without Docker). Detailed instru
 ## 🎥 Demo Video
 Check out our demo video to see the application in action! Click the link below to watch:
 
-https://drive.google.com/file/d/1oAObuweDIOl6X-vy0h5HK-CFmyReeOJx/view?usp=sharing
+https://drive.google.com/file/d/1ZBXMHHShYkAzxR45tRbPKXjkX1BkkNJ1/view?usp=sharing
 
 ## 📊 Project Poster
-Curious about our project? View our project poster showcasing key aspects of the system [here](https://github.com/SEFall24-Team61/campus-job-review-system/blob/main/app/static/Project3-Team61-poster.png).
+Curious about our project? View our project poster showcasing key aspects of the system [here](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/blob/main/CampusJobsReviewSystem.pdf).
 
 
 ## 🤝 Contribution Guidelines
