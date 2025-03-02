@@ -116,7 +116,7 @@ Choose Your Installation Method (with Docker or without Docker). Detailed instru
 ## 🎥 Demo Video
 Check out our demo video to see the application in action! Click the link below to watch:
 
-https://drive.google.com/file/d/1ZBXMHHShYkAzxR45tRbPKXjkX1BkkNJ1/view?usp=sharing
+https://drive.google.com/file/d/1cog0YbuScukYfZUhbvWfuhBrrsl9mmk0/view?usp=sharing
 
 ## 📊 Project Poster
 Curious about our project? View our project poster showcasing key aspects of the system [here](https://github.com/Software-Engineering-Spring-2025/campus-job-review-system/blob/main/CampusJobsReviewSystem.pdf).
